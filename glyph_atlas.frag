@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-uniform sampler2D glyph_atlas_sampler;
+uniform texture2D glyph_atlas_sampler;
+uniform sampler glyph_atlas_sampler_smplr;
 
 in vec2 v_unit_vertex;
 in vec2 v_atlas_position;
@@ -17,7 +18,7 @@ void main() {
   vec2 offset = v_atlas_position / v_atlas_size;
 
   frag_color = texture(
-    glyph_atlas_sampler,
+    sampler2D(glyph_atlas_sampler, glyph_atlas_sampler_smplr),
     v_unit_vertex * scale_perspective + offset
   ).aaaa * v_text_color;
 }
