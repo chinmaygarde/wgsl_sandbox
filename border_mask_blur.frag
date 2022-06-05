@@ -11,7 +11,8 @@
 // integral (using an erf approximation) to the 4 edges of the UV rectangle and
 // multiplying them.
 
-uniform sampler2D texture_sampler;
+uniform texture2D texture_sampler;
+uniform sampler texture_sampler_smplr;
 
 in vec2 v_texture_coords;
 in vec2 v_sigma_uv;
@@ -48,7 +49,7 @@ float BoxBlurMask(vec2 uv) {
 }
 
 void main() {
-  vec4 image_color = texture(texture_sampler, v_texture_coords);
+  vec4 image_color = texture(sampler2D(texture_sampler, texture_sampler_smplr), v_texture_coords);
   float blur_factor = BoxBlurMask(v_texture_coords);
 
   float within_bounds =

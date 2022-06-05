@@ -4,14 +4,14 @@ WGSL_FRAG_FILES:= blend.frag.wgsl                      \
 									solid_stroke.frag.wgsl               \
 									vertices.frag.wgsl                   \
 									border_mask_blur.frag.wgsl           \
-									advanced_blend_lighten.frag.wgsl     \
 									solid_fill.frag.wgsl                 \
 									impeller.frag.wgsl                   \
 									gaussian_blur.frag.wgsl              \
 									texture_fill.frag.wgsl               \
-									advanced_blend_colorburn.frag.wgsl   \
 									gradient_fill.frag.wgsl              \
 									ink_sparkle.frag.wgsl                \
+									advanced_blend_lighten.frag.wgsl     \
+									advanced_blend_colorburn.frag.wgsl   \
 									advanced_blend_exclusion.frag.wgsl   \
 									advanced_blend_colordodge.frag.wgsl  \
 									advanced_blend_multiply.frag.wgsl    \

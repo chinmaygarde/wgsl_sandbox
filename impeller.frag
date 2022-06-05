@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#version 450
+#version 460core
 
-uniform samplerCube cube_map;
-uniform sampler2D blue_noise;
+uniform texture3D cube_map;
+uniform sampler cube_map_smplr;
+uniform texture2D blue_noise;
+uniform sampler blue_noise_smplr;
 
 uniform FragInfo {
   vec2 texture_size;
@@ -64,7 +66,7 @@ vec2 Hash(float seed) {
 }
 
 vec4 BlueNoise(vec2 uv) {
-  return texture(blue_noise, uv);
+  return texture(sampler2D(blue_noise, blue_noise_smplr), uv);
 }
 
 vec4 BlueNoiseWithRandomOffset(vec2 screen_position, float seed) {
@@ -302,7 +304,7 @@ float MarchShadow(vec3 position) {
 ///
 
 vec4 EnvironmentColor(vec3 ray_direction) {
-  return texture(cube_map, ray_direction);
+  return texture(sampler3D(cube_map, cube_map_smplr), ray_direction);
 }
 
 vec4 SurfaceColor(vec3 ray_direction,
@@ -311,7 +313,7 @@ vec4 SurfaceColor(vec3 ray_direction,
                   float material,
                   float shadow_multiplier) {
   vec3 reflection_direction = reflect(ray_direction, surface_normal);
-  vec4 reflection_color = texture(cube_map, reflection_direction);
+  vec4 reflection_color = texture(sampler3D(cube_map, cube_map_smplr), reflection_direction);
 
   vec4 material_value;
   if (material < 1.5) {
