@@ -1,59 +1,62 @@
-WGSL_FRAG_FILES:= advanced_blend_exclusion.wgsl   \
-					        glyph_atlas.wgsl                \
-					        advanced_blend_colordodge.wgsl  \
-					        ink_sparkle.wgsl                \
-					        simple.wgsl                     \
-					        blend.wgsl                      \
-					        solid_stroke.wgsl               \
-					        advanced_blend_multiply.wgsl    \
-					        advanced_blend_softlight.wgsl   \
-					        vertices.wgsl                   \
-					        border_mask_blur.wgsl           \
-					        advanced_blend_lighten.wgsl     \
-					        solid_fill.wgsl                 \
-					        impeller.wgsl                   \
-					        advanced_blend_overlay.wgsl     \
-					        advanced_blend_difference.wgsl  \
-					        advanced_blend_hardlight.wgsl   \
-					        gaussian_blur.wgsl              \
-					        texture_fill.wgsl               \
-					        advanced_blend_colorburn.wgsl   \
-					        gradient_fill.wgsl              \
-					        advanced_blend_screen.wgsl      \
-					        advanced_blend_darken.wgsl 			\
+WGSL_FRAG_FILES:= blend.frag.wgsl                      \
+									advanced_blend_exclusion.frag.wgsl   \
+									glyph_atlas.frag.wgsl                \
+									advanced_blend_colordodge.frag.wgsl  \
+									ink_sparkle.frag.wgsl                \
+									simple.frag.wgsl                     \
+									solid_stroke.frag.wgsl               \
+									advanced_blend_multiply.frag.wgsl    \
+									advanced_blend_softlight.frag.wgsl   \
+									vertices.frag.wgsl                   \
+									border_mask_blur.frag.wgsl           \
+									advanced_blend_lighten.frag.wgsl     \
+									solid_fill.frag.wgsl                 \
+									impeller.frag.wgsl                   \
+									advanced_blend_overlay.frag.wgsl     \
+									advanced_blend_difference.frag.wgsl  \
+									advanced_blend_hardlight.frag.wgsl   \
+									gaussian_blur.frag.wgsl              \
+									texture_fill.frag.wgsl               \
+									advanced_blend_colorburn.frag.wgsl   \
+									gradient_fill.frag.wgsl              \
+									advanced_blend_screen.frag.wgsl      \
+									advanced_blend_darken.frag.wgsl      \
 
-WGSL_VERT_FILES:= solid_fill.wgsl				\
-									vertices.wgsl					\
-									border_mask_blur.wgsl	\
-									gradient_fill.wgsl		\
-									texture_fill.wgsl			\
-									gaussian_blur.wgsl		\
-									advanced_blend.wgsl		\
-									solid_stroke.wgsl			\
-									blend.wgsl						\
-									glyph_atlas.wgsl			\
+WGSL_VERT_FILES:= solid_fill.vert.wgsl				\
+									vertices.vert.wgsl					\
+									border_mask_blur.vert.wgsl	\
+									gradient_fill.vert.wgsl		  \
+									texture_fill.vert.wgsl			\
+									gaussian_blur.vert.wgsl		  \
+									advanced_blend.vert.wgsl		\
+									solid_stroke.vert.wgsl			\
+									blend.vert.wgsl						  \
+									glyph_atlas.vert.wgsl			 \
 
-.PRECIOUS: %.spvasm
+.PRECIOUS: %.frag.spvasm %.vert.spvasm
 
 main: vertex_shaders fragment_shaders
 
 vertex_shaders: $(WGSL_VERT_FILES)
 fragment_shaders: $(WGSL_FRAG_FILES)
 
-%.wgsl: %.spvasm
+%.vert.wgsl: %.vert.spvasm
 	/Users/buzzy/VersionControlled/dawn/out/Debug/tint -o $@ $<
 
-%.spvasm: %.vert
+%.frag.wgsl: %.frag.spvasm
+	/Users/buzzy/VersionControlled/dawn/out/Debug/tint -o $@ $<
+
+%.vert.spvasm: %.vert
 	glslc --target-env=vulkan1.0	\
-	 			-std=460core						\
+				-std=460core						\
 				-fauto-bind-uniforms		\
 				-fauto-map-locations		\
 				-O0											\
 				-S -o $@ $<
 
-%.spvasm: %.frag
+%.frag.spvasm: %.frag
 	glslc --target-env=vulkan1.0	\
-	 			-std=460core						\
+				-std=460core						\
 				-fauto-bind-uniforms		\
 				-fauto-map-locations		\
 				-O0											\
