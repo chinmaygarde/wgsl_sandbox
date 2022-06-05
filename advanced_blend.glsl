@@ -8,8 +8,10 @@ uniform BlendInfo {
 }
 blend_info;
 
-uniform sampler2D texture_sampler_dst;
-uniform sampler2D texture_sampler_src;
+uniform texture2D texture_sampler_dst;
+uniform sampler texture_sampler_dst_smplr;
+uniform texture2D texture_sampler_src;
+uniform sampler texture_sampler_src_smplr;
 
 in vec2 v_dst_texture_coords;
 in vec2 v_src_texture_coords;
@@ -17,9 +19,9 @@ in vec2 v_src_texture_coords;
 out vec4 frag_color;
 
 // Emulate SamplerAddressMode::ClampToBorder.
-vec4 SampleWithBorder(sampler2D tex, vec2 uv) {
+vec4 SampleWithBorder(texture2D tex, sampler smplr, vec2 uv) {
   if (uv.x > 0 && uv.y > 0 && uv.x < 1 && uv.y < 1) {
-    return texture(tex, uv);
+    return texture(sampler2D(tex, smplr), uv);
   }
   return vec4(0);
 }
@@ -33,10 +35,10 @@ vec4 Unpremultiply(vec4 color) {
 
 void main() {
   vec4 dst = Unpremultiply(
-      SampleWithBorder(texture_sampler_dst, v_dst_texture_coords));
+      SampleWithBorder(texture_sampler_dst, texture_sampler_dst_smplr, v_dst_texture_coords));
   vec4 src = blend_info.color_factor > 0
                  ? blend_info.color
-                 : Unpremultiply(SampleWithBorder(texture_sampler_src,
+                 : Unpremultiply(SampleWithBorder(texture_sampler_src, texture_sampler_src_smplr,
                                                   v_src_texture_coords));
 
   vec3 blended = Blend(dst.rgb, src.rgb);
