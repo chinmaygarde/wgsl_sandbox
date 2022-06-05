@@ -33,31 +33,31 @@ WGSL_VERT_FILES:= solid_fill.wgsl				\
 									blend.wgsl						\
 									glyph_atlas.wgsl			\
 
+.PRECIOUS: %.spvasm
 
 main: vertex_shaders fragment_shaders
 
 vertex_shaders: $(WGSL_VERT_FILES)
 fragment_shaders: $(WGSL_FRAG_FILES)
 
-%.wgsl: %.spv
-	naga $< $@
+%.wgsl: %.spvasm
+	/Users/buzzy/VersionControlled/dawn/out/Debug/tint -o $@ $<
 
-%.spv: %.vert
+%.spvasm: %.vert
 	glslc --target-env=vulkan1.0	\
 	 			-std=460core						\
 				-fauto-bind-uniforms		\
 				-fauto-map-locations		\
 				-O0											\
-				-o $@ $<
+				-S -o $@ $<
 
-%.spv: %.frag
+%.spvasm: %.frag
 	glslc --target-env=vulkan1.0	\
 	 			-std=460core						\
 				-fauto-bind-uniforms		\
 				-fauto-map-locations		\
 				-O0											\
-				-o $@ $<
-
+				-S -o $@ $<
 
 clean:
-	rm -f *.spv *.wgsl
+	rm -f *.spvasm *.wgsl
