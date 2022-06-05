@@ -1,0 +1,98 @@
+; SPIR-V
+; Version: 1.0
+; Generator: Google Shaderc over Glslang; 10
+; Bound: 56
+; Schema: 0
+               OpCapability Shader
+          %1 = OpExtInstImport "GLSL.std.450"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint Fragment %main "main" %v_texture_coords %frag_color %v_alpha
+               OpExecutionMode %main OriginUpperLeft
+               OpSource GLSL 460
+               OpSourceExtension "GL_GOOGLE_cpp_style_line_directive"
+               OpSourceExtension "GL_GOOGLE_include_directive"
+               OpName %main "main"
+               OpName %coords "coords"
+               OpName %v_texture_coords "v_texture_coords"
+               OpName %FragInfo "FragInfo"
+               OpMemberName %FragInfo 0 "texture_sampler_y_coord_scale"
+               OpName %frag_info "frag_info"
+               OpName %sampled "sampled"
+               OpName %texture_sampler "texture_sampler"
+               OpName %texture_sampler_smplr "texture_sampler_smplr"
+               OpName %frag_color "frag_color"
+               OpName %v_alpha "v_alpha"
+               OpDecorate %v_texture_coords Location 0
+               OpMemberDecorate %FragInfo 0 Offset 0
+               OpDecorate %FragInfo Block
+               OpDecorate %frag_info DescriptorSet 0
+               OpDecorate %frag_info Binding 2
+               OpDecorate %texture_sampler DescriptorSet 0
+               OpDecorate %texture_sampler Binding 0
+               OpDecorate %texture_sampler_smplr DescriptorSet 0
+               OpDecorate %texture_sampler_smplr Binding 1
+               OpDecorate %frag_color Location 0
+               OpDecorate %v_alpha Location 1
+       %void = OpTypeVoid
+          %3 = OpTypeFunction %void
+      %float = OpTypeFloat 32
+    %v2float = OpTypeVector %float 2
+%_ptr_Function_v2float = OpTypePointer Function %v2float
+%_ptr_Input_v2float = OpTypePointer Input %v2float
+%v_texture_coords = OpVariable %_ptr_Input_v2float Input
+   %FragInfo = OpTypeStruct %float
+%_ptr_Uniform_FragInfo = OpTypePointer Uniform %FragInfo
+  %frag_info = OpVariable %_ptr_Uniform_FragInfo Uniform
+        %int = OpTypeInt 32 1
+      %int_0 = OpConstant %int 0
+%_ptr_Uniform_float = OpTypePointer Uniform %float
+    %float_0 = OpConstant %float 0
+       %bool = OpTypeBool
+    %float_1 = OpConstant %float 1
+       %uint = OpTypeInt 32 0
+     %uint_1 = OpConstant %uint 1
+%_ptr_Function_float = OpTypePointer Function %float
+    %v4float = OpTypeVector %float 4
+%_ptr_Function_v4float = OpTypePointer Function %v4float
+         %37 = OpTypeImage %float 2D 0 0 0 1 Unknown
+%_ptr_UniformConstant_37 = OpTypePointer UniformConstant %37
+%texture_sampler = OpVariable %_ptr_UniformConstant_37 UniformConstant
+         %41 = OpTypeSampler
+%_ptr_UniformConstant_41 = OpTypePointer UniformConstant %41
+%texture_sampler_smplr = OpVariable %_ptr_UniformConstant_41 UniformConstant
+         %45 = OpTypeSampledImage %37
+%_ptr_Output_v4float = OpTypePointer Output %v4float
+ %frag_color = OpVariable %_ptr_Output_v4float Output
+%_ptr_Input_float = OpTypePointer Input %float
+    %v_alpha = OpVariable %_ptr_Input_float Input
+       %main = OpFunction %void None %3
+          %5 = OpLabel
+     %coords = OpVariable %_ptr_Function_v2float Function
+    %sampled = OpVariable %_ptr_Function_v4float Function
+         %12 = OpLoad %v2float %v_texture_coords
+               OpStore %coords %12
+         %19 = OpAccessChain %_ptr_Uniform_float %frag_info %int_0
+         %20 = OpLoad %float %19
+         %23 = OpFOrdLessThan %bool %20 %float_0
+               OpSelectionMerge %25 None
+               OpBranchConditional %23 %24 %25
+         %24 = OpLabel
+         %30 = OpAccessChain %_ptr_Function_float %coords %uint_1
+         %31 = OpLoad %float %30
+         %32 = OpFSub %float %float_1 %31
+         %33 = OpAccessChain %_ptr_Function_float %coords %uint_1
+               OpStore %33 %32
+               OpBranch %25
+         %25 = OpLabel
+         %40 = OpLoad %37 %texture_sampler
+         %44 = OpLoad %41 %texture_sampler_smplr
+         %46 = OpSampledImage %45 %40 %44
+         %47 = OpLoad %v2float %coords
+         %48 = OpImageSampleImplicitLod %v4float %46 %47
+               OpStore %sampled %48
+         %51 = OpLoad %v4float %sampled
+         %54 = OpLoad %float %v_alpha
+         %55 = OpVectorTimesScalar %v4float %51 %54
+               OpStore %frag_color %55
+               OpReturn
+               OpFunctionEnd

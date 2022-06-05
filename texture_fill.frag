@@ -4,7 +4,9 @@
 
 #include "utils.sl.h"
 
-uniform sampler2D texture_sampler;
+uniform texture2D texture_sampler;
+uniform sampler texture_sampler_smplr;
+
 uniform FragInfo {
   float texture_sampler_y_coord_scale;
 } frag_info;
@@ -15,6 +17,10 @@ in float v_alpha;
 out vec4 frag_color;
 
 void main() {
-  vec4 sampled = ImpellerTexture(texture_sampler, v_texture_coords, frag_info.texture_sampler_y_coord_scale);
+  vec2 coords = v_texture_coords;
+  if (frag_info.texture_sampler_y_coord_scale < 0.0) {
+    coords.y = 1.0 - coords.y;
+  }
+  vec4 sampled = texture(sampler2D(texture_sampler, texture_sampler_smplr), coords);
   frag_color = sampled * v_alpha;
 }

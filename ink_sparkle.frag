@@ -6,23 +6,25 @@
 
 precision highp float;
 
-uniform vec4 u_color;
-uniform float u_alpha;
-uniform vec4 u_sparkle_color;
-uniform float u_sparkle_alpha;
-uniform float u_blur;
-uniform vec2 u_center;
-uniform float u_radius_scale;
-uniform float u_max_radius;
-uniform vec2 u_resolution_scale;
-uniform vec2 u_noise_scale;
-uniform float u_noise_phase;
-uniform vec2 u_circle1;
-uniform vec2 u_circle2;
-uniform vec2 u_circle3;
-uniform vec2 u_rotation1;
-uniform vec2 u_rotation2;
-uniform vec2 u_rotation3;
+uniform Uniforms {
+  vec4 color;
+  float alpha;
+  vec4 sparkle_color;
+  float sparkle_alpha;
+  float blur;
+  vec2 center;
+  float radius_scale;
+  float max_radius;
+  vec2 resolution_scale;
+  vec2 noise_scale;
+  float noise_phase;
+  vec2 circle1;
+  vec2 circle2;
+  vec2 circle3;
+  vec2 rotation1;
+  vec2 rotation2;
+  vec2 rotation3;
+} u;
 
 out vec4 fragColor;
 
@@ -82,23 +84,23 @@ float sparkle(vec2 uv, float t) {
 
 float turbulence(vec2 uv) {
   vec2 uv_scale = uv * TURBULENCE_SCALE;
-  float g1 = circle_grid(TURBULENCE_SCALE, uv_scale, u_circle1, u_rotation1, 0.17);
-  float g2 = circle_grid(TURBULENCE_SCALE, uv_scale, u_circle2, u_rotation2, 0.2);
-  float g3 = circle_grid(TURBULENCE_SCALE, uv_scale, u_circle3, u_rotation3, 0.275);
+  float g1 = circle_grid(TURBULENCE_SCALE, uv_scale, u.circle1, u.rotation1, 0.17);
+  float g2 = circle_grid(TURBULENCE_SCALE, uv_scale, u.circle2, u.rotation2, 0.2);
+  float g3 = circle_grid(TURBULENCE_SCALE, uv_scale, u.circle3, u.rotation3, 0.275);
   float v = (g1 * g1 + g2 - g3) * 0.5;
   return saturate(0.45 + 0.8 * v);
 }
 
 void main() {
   vec2 p = gl_FragCoord.xy;
-  vec2 uv = p * u_resolution_scale;
-  vec2 density_uv = uv - mod(p, u_noise_scale);
-  float radius = u_max_radius * u_radius_scale;
+  vec2 uv = p * u.resolution_scale;
+  vec2 density_uv = uv - mod(p, u.noise_scale);
+  float radius = u.max_radius * u.radius_scale;
   float turbulence = turbulence(uv);
-  float ring = soft_ring(p, u_center, radius, 0.05 * u_max_radius, u_blur);
-  float sparkle = sparkle(density_uv, u_noise_phase) * ring * turbulence * u_sparkle_alpha;
-  float wave_alpha = soft_circle(p, u_center, radius, u_blur) * u_alpha * u_color.a;
-  vec4 wave_color = vec4(u_color.rgb * wave_alpha, wave_alpha);
-  vec4 sparkle_color = vec4(u_sparkle_color.rgb * u_sparkle_color.a, u_sparkle_color.a);
+  float ring = soft_ring(p, u.center, radius, 0.05 * u.max_radius, u.blur);
+  float sparkle = sparkle(density_uv, u.noise_phase) * ring * turbulence * u.sparkle_alpha;
+  float wave_alpha = soft_circle(p, u.center, radius, u.blur) * u.alpha * u.color.a;
+  vec4 wave_color = vec4(u.color.rgb * wave_alpha, wave_alpha);
+  vec4 sparkle_color = vec4(u.sparkle_color.rgb * u.sparkle_color.a, u.sparkle_color.a);
   fragColor = mix(wave_color, sparkle_color, sparkle);
 }
