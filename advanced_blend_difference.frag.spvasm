@@ -1,188 +1,137 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 10
-; Bound: 119
+; Bound: 193
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Fragment %main "main" %v_dst_texture_coords %v_src_texture_coords %frag_color
-               OpExecutionMode %main OriginUpperLeft
-               OpSource GLSL 460
-               OpSourceExtension "GL_GOOGLE_cpp_style_line_directive"
-               OpSourceExtension "GL_GOOGLE_include_directive"
-               OpName %main "main"
-               OpName %Blend_vf3_vf3_ "Blend(vf3;vf3;"
-               OpName %dst "dst"
-               OpName %src "src"
-               OpName %Unpremultiply_vf4_ "Unpremultiply(vf4;"
-               OpName %color "color"
-               OpName %dst_0 "dst"
-               OpName %texture_sampler_dst "texture_sampler_dst"
-               OpName %texture_sampler_dst_smplr "texture_sampler_dst_smplr"
-               OpName %v_dst_texture_coords "v_dst_texture_coords"
-               OpName %param "param"
-               OpName %src_0 "src"
-               OpName %BlendInfo "BlendInfo"
-               OpMemberName %BlendInfo 0 "color_factor"
-               OpMemberName %BlendInfo 1 "color"
-               OpName %blend_info "blend_info"
-               OpName %texture_sampler_src "texture_sampler_src"
-               OpName %texture_sampler_src_smplr "texture_sampler_src_smplr"
-               OpName %v_src_texture_coords "v_src_texture_coords"
-               OpName %param_0 "param"
-               OpName %blended "blended"
-               OpName %param_1 "param"
-               OpName %param_2 "param"
-               OpName %frag_color "frag_color"
-               OpDecorate %texture_sampler_dst DescriptorSet 0
-               OpDecorate %texture_sampler_dst Binding 1
-               OpDecorate %texture_sampler_dst_smplr DescriptorSet 0
-               OpDecorate %texture_sampler_dst_smplr Binding 2
-               OpDecorate %v_dst_texture_coords Location 0
-               OpMemberDecorate %BlendInfo 0 Offset 0
-               OpMemberDecorate %BlendInfo 1 Offset 16
-               OpDecorate %BlendInfo Block
-               OpDecorate %blend_info DescriptorSet 0
-               OpDecorate %blend_info Binding 0
-               OpDecorate %texture_sampler_src DescriptorSet 0
-               OpDecorate %texture_sampler_src Binding 3
-               OpDecorate %texture_sampler_src_smplr DescriptorSet 0
-               OpDecorate %texture_sampler_src_smplr Binding 4
-               OpDecorate %v_src_texture_coords Location 1
-               OpDecorate %frag_color Location 0
+               OpEntryPoint Fragment %4 "main" %65 %93 %108
+               OpExecutionMode %4 OriginUpperLeft
+               OpDecorate %55 DescriptorSet 0
+               OpDecorate %55 Binding 1
+               OpDecorate %59 DescriptorSet 0
+               OpDecorate %59 Binding 2
+               OpDecorate %65 Location 0
+               OpMemberDecorate %_struct_71 0 Offset 0
+               OpMemberDecorate %_struct_71 1 Offset 16
+               OpDecorate %_struct_71 Block
+               OpDecorate %73 DescriptorSet 0
+               OpDecorate %73 Binding 0
+               OpDecorate %88 DescriptorSet 0
+               OpDecorate %88 Binding 3
+               OpDecorate %90 DescriptorSet 0
+               OpDecorate %90 Binding 4
+               OpDecorate %93 Location 1
+               OpDecorate %108 Location 0
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
     %v3float = OpTypeVector %float 3
-%_ptr_Function_v3float = OpTypePointer Function %v3float
-          %9 = OpTypeFunction %v3float %_ptr_Function_v3float %_ptr_Function_v3float
     %v4float = OpTypeVector %float 4
-%_ptr_Function_v4float = OpTypePointer Function %v4float
-         %16 = OpTypeFunction %v4float %_ptr_Function_v4float
        %uint = OpTypeInt 32 0
-     %uint_3 = OpConstant %uint 3
-%_ptr_Function_float = OpTypePointer Function %float
     %float_0 = OpConstant %float 0
        %bool = OpTypeBool
          %36 = OpConstantComposite %v4float %float_0 %float_0 %float_0 %float_0
          %53 = OpTypeImage %float 2D 0 0 0 1 Unknown
 %_ptr_UniformConstant_53 = OpTypePointer UniformConstant %53
-%texture_sampler_dst = OpVariable %_ptr_UniformConstant_53 UniformConstant
+         %55 = OpVariable %_ptr_UniformConstant_53 UniformConstant
          %57 = OpTypeSampler
 %_ptr_UniformConstant_57 = OpTypePointer UniformConstant %57
-%texture_sampler_dst_smplr = OpVariable %_ptr_UniformConstant_57 UniformConstant
+         %59 = OpVariable %_ptr_UniformConstant_57 UniformConstant
          %61 = OpTypeSampledImage %53
     %v2float = OpTypeVector %float 2
 %_ptr_Input_v2float = OpTypePointer Input %v2float
-%v_dst_texture_coords = OpVariable %_ptr_Input_v2float Input
-  %BlendInfo = OpTypeStruct %float %v4float
-%_ptr_Uniform_BlendInfo = OpTypePointer Uniform %BlendInfo
- %blend_info = OpVariable %_ptr_Uniform_BlendInfo Uniform
+         %65 = OpVariable %_ptr_Input_v2float Input
+ %_struct_71 = OpTypeStruct %float %v4float
+%_ptr_Uniform__struct_71 = OpTypePointer Uniform %_struct_71
+         %73 = OpVariable %_ptr_Uniform__struct_71 Uniform
         %int = OpTypeInt 32 1
       %int_0 = OpConstant %int 0
 %_ptr_Uniform_float = OpTypePointer Uniform %float
       %int_1 = OpConstant %int 1
 %_ptr_Uniform_v4float = OpTypePointer Uniform %v4float
-%texture_sampler_src = OpVariable %_ptr_UniformConstant_53 UniformConstant
-%texture_sampler_src_smplr = OpVariable %_ptr_UniformConstant_57 UniformConstant
-%v_src_texture_coords = OpVariable %_ptr_Input_v2float Input
+         %88 = OpVariable %_ptr_UniformConstant_53 UniformConstant
+         %90 = OpVariable %_ptr_UniformConstant_57 UniformConstant
+         %93 = OpVariable %_ptr_Input_v2float Input
 %_ptr_Output_v4float = OpTypePointer Output %v4float
- %frag_color = OpVariable %_ptr_Output_v4float Output
-       %main = OpFunction %void None %3
+        %108 = OpVariable %_ptr_Output_v4float Output
+     %uint_0 = OpConstant %uint 0
+          %4 = OpFunction %void None %3
           %5 = OpLabel
-      %dst_0 = OpVariable %_ptr_Function_v4float Function
-      %param = OpVariable %_ptr_Function_v4float Function
-      %src_0 = OpVariable %_ptr_Function_v4float Function
-         %80 = OpVariable %_ptr_Function_v4float Function
-    %param_0 = OpVariable %_ptr_Function_v4float Function
-    %blended = OpVariable %_ptr_Function_v3float Function
-    %param_1 = OpVariable %_ptr_Function_v3float Function
-    %param_2 = OpVariable %_ptr_Function_v3float Function
-         %56 = OpLoad %53 %texture_sampler_dst
-         %60 = OpLoad %57 %texture_sampler_dst_smplr
+         %56 = OpLoad %53 %55
+         %60 = OpLoad %57 %59
          %62 = OpSampledImage %61 %56 %60
-         %66 = OpLoad %v2float %v_dst_texture_coords
+         %66 = OpLoad %v2float %65
          %67 = OpImageSampleImplicitLod %v4float %62 %66
-               OpStore %param %67
-         %69 = OpFunctionCall %v4float %Unpremultiply_vf4_ %param
-               OpStore %dst_0 %69
-         %77 = OpAccessChain %_ptr_Uniform_float %blend_info %int_0
+               OpSelectionMerge %150 None
+               OpSwitch %uint_0 %132
+        %132 = OpLabel
+        %134 = OpCompositeExtract %float %67 3
+        %135 = OpFOrdEqual %bool %134 %float_0
+               OpSelectionMerge %137 None
+               OpBranchConditional %135 %136 %137
+        %136 = OpLabel
+               OpBranch %150
+        %137 = OpLabel
+        %139 = OpVectorShuffle %v3float %67 %67 0 1 2
+        %142 = OpCompositeConstruct %v3float %134 %134 %134
+        %143 = OpFDiv %v3float %139 %142
+        %146 = OpCompositeExtract %float %143 0
+        %147 = OpCompositeExtract %float %143 1
+        %148 = OpCompositeExtract %float %143 2
+        %149 = OpCompositeConstruct %v4float %146 %147 %148 %134
+               OpBranch %150
+        %150 = OpLabel
+        %190 = OpPhi %v4float %36 %136 %149 %137
+         %77 = OpAccessChain %_ptr_Uniform_float %73 %int_0
          %78 = OpLoad %float %77
          %79 = OpFOrdGreaterThan %bool %78 %float_0
                OpSelectionMerge %82 None
                OpBranchConditional %79 %81 %87
          %81 = OpLabel
-         %85 = OpAccessChain %_ptr_Uniform_v4float %blend_info %int_1
+         %85 = OpAccessChain %_ptr_Uniform_v4float %73 %int_1
          %86 = OpLoad %v4float %85
-               OpStore %80 %86
                OpBranch %82
          %87 = OpLabel
-         %89 = OpLoad %53 %texture_sampler_src
-         %91 = OpLoad %57 %texture_sampler_src_smplr
+         %89 = OpLoad %53 %88
+         %91 = OpLoad %57 %90
          %92 = OpSampledImage %61 %89 %91
-         %94 = OpLoad %v2float %v_src_texture_coords
+         %94 = OpLoad %v2float %93
          %95 = OpImageSampleImplicitLod %v4float %92 %94
-               OpStore %param_0 %95
-         %97 = OpFunctionCall %v4float %Unpremultiply_vf4_ %param_0
-               OpStore %80 %97
+               OpSelectionMerge %174 None
+               OpSwitch %uint_0 %156
+        %156 = OpLabel
+        %158 = OpCompositeExtract %float %95 3
+        %159 = OpFOrdEqual %bool %158 %float_0
+               OpSelectionMerge %161 None
+               OpBranchConditional %159 %160 %161
+        %160 = OpLabel
+               OpBranch %174
+        %161 = OpLabel
+        %163 = OpVectorShuffle %v3float %95 %95 0 1 2
+        %166 = OpCompositeConstruct %v3float %158 %158 %158
+        %167 = OpFDiv %v3float %163 %166
+        %170 = OpCompositeExtract %float %167 0
+        %171 = OpCompositeExtract %float %167 1
+        %172 = OpCompositeExtract %float %167 2
+        %173 = OpCompositeConstruct %v4float %170 %171 %172 %158
+               OpBranch %174
+        %174 = OpLabel
+        %191 = OpPhi %v4float %36 %160 %173 %161
                OpBranch %82
          %82 = OpLabel
-         %98 = OpLoad %v4float %80
-               OpStore %src_0 %98
-        %101 = OpLoad %v4float %dst_0
-        %102 = OpVectorShuffle %v3float %101 %101 0 1 2
-               OpStore %param_1 %102
-        %104 = OpLoad %v4float %src_0
-        %105 = OpVectorShuffle %v3float %104 %104 0 1 2
-               OpStore %param_2 %105
-        %106 = OpFunctionCall %v3float %Blend_vf3_vf3_ %param_1 %param_2
-               OpStore %blended %106
-        %109 = OpLoad %v3float %blended
-        %110 = OpAccessChain %_ptr_Function_float %src_0 %uint_3
-        %111 = OpLoad %float %110
-        %112 = OpVectorTimesScalar %v3float %109 %111
-        %113 = OpAccessChain %_ptr_Function_float %src_0 %uint_3
-        %114 = OpLoad %float %113
+        %192 = OpPhi %v4float %86 %81 %191 %174
+        %102 = OpVectorShuffle %v3float %190 %190 0 1 2
+        %105 = OpVectorShuffle %v3float %192 %192 0 1 2
+        %180 = OpFSub %v3float %102 %105
+        %181 = OpExtInst %v3float %1 FAbs %180
+        %111 = OpCompositeExtract %float %192 3
+        %112 = OpVectorTimesScalar %v3float %181 %111
         %115 = OpCompositeExtract %float %112 0
         %116 = OpCompositeExtract %float %112 1
         %117 = OpCompositeExtract %float %112 2
-        %118 = OpCompositeConstruct %v4float %115 %116 %117 %114
-               OpStore %frag_color %118
+        %118 = OpCompositeConstruct %v4float %115 %116 %117 %111
+               OpStore %108 %118
                OpReturn
-               OpFunctionEnd
-%Blend_vf3_vf3_ = OpFunction %v3float None %9
-        %dst = OpFunctionParameter %_ptr_Function_v3float
-        %src = OpFunctionParameter %_ptr_Function_v3float
-         %13 = OpLabel
-         %20 = OpLoad %v3float %dst
-         %21 = OpLoad %v3float %src
-         %22 = OpFSub %v3float %20 %21
-         %23 = OpExtInst %v3float %1 FAbs %22
-               OpReturnValue %23
-               OpFunctionEnd
-%Unpremultiply_vf4_ = OpFunction %v4float None %16
-      %color = OpFunctionParameter %_ptr_Function_v4float
-         %19 = OpLabel
-         %29 = OpAccessChain %_ptr_Function_float %color %uint_3
-         %30 = OpLoad %float %29
-         %33 = OpFOrdEqual %bool %30 %float_0
-               OpSelectionMerge %35 None
-               OpBranchConditional %33 %34 %35
-         %34 = OpLabel
-               OpReturnValue %36
-         %35 = OpLabel
-         %38 = OpLoad %v4float %color
-         %39 = OpVectorShuffle %v3float %38 %38 0 1 2
-         %40 = OpAccessChain %_ptr_Function_float %color %uint_3
-         %41 = OpLoad %float %40
-         %42 = OpCompositeConstruct %v3float %41 %41 %41
-         %43 = OpFDiv %v3float %39 %42
-         %44 = OpAccessChain %_ptr_Function_float %color %uint_3
-         %45 = OpLoad %float %44
-         %46 = OpCompositeExtract %float %43 0
-         %47 = OpCompositeExtract %float %43 1
-         %48 = OpCompositeExtract %float %43 2
-         %49 = OpCompositeConstruct %v4float %46 %47 %48 %45
-               OpReturnValue %49
                OpFunctionEnd

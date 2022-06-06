@@ -6,182 +6,121 @@
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Vertex %main "main" %glyph_position %_ %unit_vertex %glyph_size %v_unit_vertex %v_atlas_position %atlas_position %v_atlas_glyph_size %atlas_glyph_size %v_atlas_size %v_text_color
-               OpSource GLSL 460
-               OpSourceExtension "GL_GOOGLE_cpp_style_line_directive"
-               OpSourceExtension "GL_GOOGLE_include_directive"
-               OpName %main "main"
-               OpName %translate "translate"
-               OpName %FrameInfo "FrameInfo"
-               OpMemberName %FrameInfo 0 "mvp"
-               OpMemberName %FrameInfo 1 "atlas_size"
-               OpMemberName %FrameInfo 2 "text_color"
-               OpName %frame_info "frame_info"
-               OpName %glyph_position "glyph_position"
-               OpName %translated_mvp "translated_mvp"
-               OpName %gl_PerVertex "gl_PerVertex"
-               OpMemberName %gl_PerVertex 0 "gl_Position"
-               OpMemberName %gl_PerVertex 1 "gl_PointSize"
-               OpMemberName %gl_PerVertex 2 "gl_ClipDistance"
-               OpMemberName %gl_PerVertex 3 "gl_CullDistance"
-               OpName %_ ""
-               OpName %unit_vertex "unit_vertex"
-               OpName %glyph_size "glyph_size"
-               OpName %v_unit_vertex "v_unit_vertex"
-               OpName %v_atlas_position "v_atlas_position"
-               OpName %atlas_position "atlas_position"
-               OpName %v_atlas_glyph_size "v_atlas_glyph_size"
-               OpName %atlas_glyph_size "atlas_glyph_size"
-               OpName %v_atlas_size "v_atlas_size"
-               OpName %v_text_color "v_text_color"
-               OpMemberDecorate %FrameInfo 0 ColMajor
-               OpMemberDecorate %FrameInfo 0 Offset 0
-               OpMemberDecorate %FrameInfo 0 MatrixStride 16
-               OpMemberDecorate %FrameInfo 1 Offset 64
-               OpMemberDecorate %FrameInfo 2 Offset 80
-               OpDecorate %FrameInfo Block
-               OpDecorate %frame_info DescriptorSet 0
-               OpDecorate %frame_info Binding 0
-               OpDecorate %glyph_position Location 1
-               OpMemberDecorate %gl_PerVertex 0 BuiltIn Position
-               OpMemberDecorate %gl_PerVertex 1 BuiltIn PointSize
-               OpMemberDecorate %gl_PerVertex 2 BuiltIn ClipDistance
-               OpMemberDecorate %gl_PerVertex 3 BuiltIn CullDistance
-               OpDecorate %gl_PerVertex Block
-               OpDecorate %unit_vertex Location 0
-               OpDecorate %glyph_size Location 2
-               OpDecorate %v_unit_vertex Location 0
-               OpDecorate %v_atlas_position Location 1
-               OpDecorate %atlas_position Location 3
-               OpDecorate %v_atlas_glyph_size Location 2
-               OpDecorate %atlas_glyph_size Location 4
-               OpDecorate %v_atlas_size Location 3
-               OpDecorate %v_text_color Location 4
+               OpEntryPoint Vertex %4 "main" %21 %86 %88 %91 %105 %107 %108 %110 %111 %113 %117
+               OpMemberDecorate %_struct_12 0 ColMajor
+               OpMemberDecorate %_struct_12 0 Offset 0
+               OpMemberDecorate %_struct_12 0 MatrixStride 16
+               OpMemberDecorate %_struct_12 1 Offset 64
+               OpMemberDecorate %_struct_12 2 Offset 80
+               OpDecorate %_struct_12 Block
+               OpDecorate %14 DescriptorSet 0
+               OpDecorate %14 Binding 0
+               OpDecorate %21 Location 1
+               OpMemberDecorate %_struct_84 0 BuiltIn Position
+               OpMemberDecorate %_struct_84 1 BuiltIn PointSize
+               OpMemberDecorate %_struct_84 2 BuiltIn ClipDistance
+               OpMemberDecorate %_struct_84 3 BuiltIn CullDistance
+               OpDecorate %_struct_84 Block
+               OpDecorate %88 Location 0
+               OpDecorate %91 Location 2
+               OpDecorate %105 Location 0
+               OpDecorate %107 Location 1
+               OpDecorate %108 Location 3
+               OpDecorate %110 Location 2
+               OpDecorate %111 Location 4
+               OpDecorate %113 Location 3
+               OpDecorate %117 Location 4
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
     %v4float = OpTypeVector %float 4
-%_ptr_Function_v4float = OpTypePointer Function %v4float
 %mat4v4float = OpTypeMatrix %v4float 4
     %v2float = OpTypeVector %float 2
-  %FrameInfo = OpTypeStruct %mat4v4float %v2float %v4float
-%_ptr_Uniform_FrameInfo = OpTypePointer Uniform %FrameInfo
- %frame_info = OpVariable %_ptr_Uniform_FrameInfo Uniform
+ %_struct_12 = OpTypeStruct %mat4v4float %v2float %v4float
+%_ptr_Uniform__struct_12 = OpTypePointer Uniform %_struct_12
+         %14 = OpVariable %_ptr_Uniform__struct_12 Uniform
         %int = OpTypeInt 32 1
       %int_0 = OpConstant %int 0
 %_ptr_Uniform_v4float = OpTypePointer Uniform %v4float
 %_ptr_Input_v2float = OpTypePointer Input %v2float
-%glyph_position = OpVariable %_ptr_Input_v2float Input
+         %21 = OpVariable %_ptr_Input_v2float Input
        %uint = OpTypeInt 32 0
      %uint_0 = OpConstant %uint 0
 %_ptr_Input_float = OpTypePointer Input %float
       %int_1 = OpConstant %int 1
      %uint_1 = OpConstant %uint 1
       %int_3 = OpConstant %int 3
-%_ptr_Function_mat4v4float = OpTypePointer Function %mat4v4float
       %int_2 = OpConstant %int 2
-    %v3float = OpTypeVector %float 3
      %uint_3 = OpConstant %uint 3
 %_ptr_Uniform_float = OpTypePointer Uniform %float
     %float_1 = OpConstant %float 1
     %float_0 = OpConstant %float 0
 %_arr_float_uint_1 = OpTypeArray %float %uint_1
-%gl_PerVertex = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
-%_ptr_Output_gl_PerVertex = OpTypePointer Output %gl_PerVertex
-          %_ = OpVariable %_ptr_Output_gl_PerVertex Output
-%unit_vertex = OpVariable %_ptr_Input_v2float Input
- %glyph_size = OpVariable %_ptr_Input_v2float Input
+ %_struct_84 = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
+%_ptr_Output__struct_84 = OpTypePointer Output %_struct_84
+         %86 = OpVariable %_ptr_Output__struct_84 Output
+         %88 = OpVariable %_ptr_Input_v2float Input
+         %91 = OpVariable %_ptr_Input_v2float Input
 %_ptr_Output_v4float = OpTypePointer Output %v4float
 %_ptr_Output_v2float = OpTypePointer Output %v2float
-%v_unit_vertex = OpVariable %_ptr_Output_v2float Output
-%v_atlas_position = OpVariable %_ptr_Output_v2float Output
-%atlas_position = OpVariable %_ptr_Input_v2float Input
-%v_atlas_glyph_size = OpVariable %_ptr_Output_v2float Output
-%atlas_glyph_size = OpVariable %_ptr_Input_v2float Input
-%v_atlas_size = OpVariable %_ptr_Output_v2float Output
+        %105 = OpVariable %_ptr_Output_v2float Output
+        %107 = OpVariable %_ptr_Output_v2float Output
+        %108 = OpVariable %_ptr_Input_v2float Input
+        %110 = OpVariable %_ptr_Output_v2float Output
+        %111 = OpVariable %_ptr_Input_v2float Input
+        %113 = OpVariable %_ptr_Output_v2float Output
 %_ptr_Uniform_v2float = OpTypePointer Uniform %v2float
-%v_text_color = OpVariable %_ptr_Output_v4float Output
-       %main = OpFunction %void None %3
+        %117 = OpVariable %_ptr_Output_v4float Output
+          %4 = OpFunction %void None %3
           %5 = OpLabel
-  %translate = OpVariable %_ptr_Function_v4float Function
-%translated_mvp = OpVariable %_ptr_Function_mat4v4float Function
-         %18 = OpAccessChain %_ptr_Uniform_v4float %frame_info %int_0 %int_0
+         %18 = OpAccessChain %_ptr_Uniform_v4float %14 %int_0 %int_0
          %19 = OpLoad %v4float %18
-         %25 = OpAccessChain %_ptr_Input_float %glyph_position %uint_0
+         %25 = OpAccessChain %_ptr_Input_float %21 %uint_0
          %26 = OpLoad %float %25
          %27 = OpVectorTimesScalar %v4float %19 %26
-         %29 = OpAccessChain %_ptr_Uniform_v4float %frame_info %int_0 %int_1
+         %29 = OpAccessChain %_ptr_Uniform_v4float %14 %int_0 %int_1
          %30 = OpLoad %v4float %29
-         %32 = OpAccessChain %_ptr_Input_float %glyph_position %uint_1
+         %32 = OpAccessChain %_ptr_Input_float %21 %uint_1
          %33 = OpLoad %float %32
          %34 = OpVectorTimesScalar %v4float %30 %33
          %35 = OpFAdd %v4float %27 %34
-         %37 = OpAccessChain %_ptr_Uniform_v4float %frame_info %int_0 %int_3
+         %37 = OpAccessChain %_ptr_Uniform_v4float %14 %int_0 %int_3
          %38 = OpLoad %v4float %37
          %39 = OpFAdd %v4float %35 %38
-               OpStore %translate %39
-         %42 = OpAccessChain %_ptr_Uniform_v4float %frame_info %int_0 %int_0
-         %43 = OpLoad %v4float %42
-         %44 = OpAccessChain %_ptr_Uniform_v4float %frame_info %int_0 %int_1
-         %45 = OpLoad %v4float %44
-         %47 = OpAccessChain %_ptr_Uniform_v4float %frame_info %int_0 %int_2
+         %47 = OpAccessChain %_ptr_Uniform_v4float %14 %int_0 %int_2
          %48 = OpLoad %v4float %47
-         %50 = OpLoad %v4float %translate
-         %51 = OpVectorShuffle %v3float %50 %50 0 1 2
-         %54 = OpAccessChain %_ptr_Uniform_float %frame_info %int_0 %int_3 %uint_3
+         %54 = OpAccessChain %_ptr_Uniform_float %14 %int_0 %int_3 %uint_3
          %55 = OpLoad %float %54
-         %56 = OpCompositeExtract %float %51 0
-         %57 = OpCompositeExtract %float %51 1
-         %58 = OpCompositeExtract %float %51 2
-         %59 = OpCompositeConstruct %v4float %56 %57 %58 %55
-         %62 = OpCompositeExtract %float %43 0
-         %63 = OpCompositeExtract %float %43 1
-         %64 = OpCompositeExtract %float %43 2
-         %65 = OpCompositeExtract %float %43 3
-         %66 = OpCompositeExtract %float %45 0
-         %67 = OpCompositeExtract %float %45 1
-         %68 = OpCompositeExtract %float %45 2
-         %69 = OpCompositeExtract %float %45 3
-         %70 = OpCompositeExtract %float %48 0
-         %71 = OpCompositeExtract %float %48 1
-         %72 = OpCompositeExtract %float %48 2
-         %73 = OpCompositeExtract %float %48 3
-         %74 = OpCompositeExtract %float %59 0
-         %75 = OpCompositeExtract %float %59 1
-         %76 = OpCompositeExtract %float %59 2
-         %77 = OpCompositeExtract %float %59 3
-         %78 = OpCompositeConstruct %v4float %62 %63 %64 %65
-         %79 = OpCompositeConstruct %v4float %66 %67 %68 %69
-         %80 = OpCompositeConstruct %v4float %70 %71 %72 %73
-         %81 = OpCompositeConstruct %v4float %74 %75 %76 %77
-         %82 = OpCompositeConstruct %mat4v4float %78 %79 %80 %81
-               OpStore %translated_mvp %82
-         %87 = OpLoad %mat4v4float %translated_mvp
-         %89 = OpAccessChain %_ptr_Input_float %unit_vertex %uint_0
+         %56 = OpCompositeExtract %float %39 0
+         %57 = OpCompositeExtract %float %39 1
+         %58 = OpCompositeExtract %float %39 2
+         %81 = OpCompositeConstruct %v4float %56 %57 %58 %55
+         %82 = OpCompositeConstruct %mat4v4float %19 %30 %48 %81
+         %89 = OpAccessChain %_ptr_Input_float %88 %uint_0
          %90 = OpLoad %float %89
-         %92 = OpAccessChain %_ptr_Input_float %glyph_size %uint_0
+         %92 = OpAccessChain %_ptr_Input_float %91 %uint_0
          %93 = OpLoad %float %92
          %94 = OpFMul %float %90 %93
-         %95 = OpAccessChain %_ptr_Input_float %unit_vertex %uint_1
+         %95 = OpAccessChain %_ptr_Input_float %88 %uint_1
          %96 = OpLoad %float %95
-         %97 = OpAccessChain %_ptr_Input_float %glyph_size %uint_1
+         %97 = OpAccessChain %_ptr_Input_float %91 %uint_1
          %98 = OpLoad %float %97
          %99 = OpFMul %float %96 %98
         %100 = OpCompositeConstruct %v4float %94 %99 %float_0 %float_1
-        %101 = OpMatrixTimesVector %v4float %87 %100
-        %103 = OpAccessChain %_ptr_Output_v4float %_ %int_0
+        %101 = OpMatrixTimesVector %v4float %82 %100
+        %103 = OpAccessChain %_ptr_Output_v4float %86 %int_0
                OpStore %103 %101
-        %106 = OpLoad %v2float %unit_vertex
-               OpStore %v_unit_vertex %106
-        %109 = OpLoad %v2float %atlas_position
-               OpStore %v_atlas_position %109
-        %112 = OpLoad %v2float %atlas_glyph_size
-               OpStore %v_atlas_glyph_size %112
-        %115 = OpAccessChain %_ptr_Uniform_v2float %frame_info %int_1
+        %106 = OpLoad %v2float %88
+               OpStore %105 %106
+        %109 = OpLoad %v2float %108
+               OpStore %107 %109
+        %112 = OpLoad %v2float %111
+               OpStore %110 %112
+        %115 = OpAccessChain %_ptr_Uniform_v2float %14 %int_1
         %116 = OpLoad %v2float %115
-               OpStore %v_atlas_size %116
-        %118 = OpAccessChain %_ptr_Uniform_v4float %frame_info %int_2
+               OpStore %113 %116
+        %118 = OpAccessChain %_ptr_Uniform_v4float %14 %int_2
         %119 = OpLoad %v4float %118
-               OpStore %v_text_color %119
+               OpStore %117 %119
                OpReturn
                OpFunctionEnd

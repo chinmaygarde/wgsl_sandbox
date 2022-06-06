@@ -1,900 +1,789 @@
-struct FragInfo {
-  texture_size : vec2<f32>,
-  time : f32,
+struct S {
+  field0 : vec2<f32>,
+  field1 : f32,
 }
 
-@group(0) @binding(2) var blue_noise : texture_2d<f32>;
+@group(0) @binding(2) var x_264 : texture_2d<f32>;
 
-@group(0) @binding(3) var blue_noise_smplr : sampler;
+@group(0) @binding(3) var x_268 : sampler;
 
-@group(0) @binding(4) var<uniform> frag_info : FragInfo;
+@group(0) @binding(4) var<uniform> x_321 : S;
 
-@group(0) @binding(0) var cube_map : texture_3d<f32>;
+@group(0) @binding(0) var x_907 : texture_3d<f32>;
 
-@group(0) @binding(1) var cube_map_smplr : sampler;
+@group(0) @binding(1) var x_909 : sampler;
 
-var<private> v_screen_position : vec2<f32>;
+var<private> x_1264 : vec2<f32>;
 
-var<private> frag_color : vec4<f32>;
-
-fn GetFragDirection_vf2_vf3_(uv_1 : ptr<function, vec2<f32>>, cam_forward : ptr<function, vec3<f32>>) -> vec3<f32> {
-  var lens_uv : vec2<f32>;
-  var cam_right : vec3<f32>;
-  var cam_up : vec3<f32>;
-  var fov : f32;
-  let x_1187 : vec2<f32> = *(uv_1);
-  let x_1190 : vec2<f32> = frag_info.texture_size;
-  let x_1194 : vec2<f32> = frag_info.texture_size;
-  lens_uv = ((x_1187 - (x_1190 * 0.5)) / vec2<f32>(x_1194.x, x_1194.x));
-  let x_1198 : vec3<f32> = *(cam_forward);
-  cam_right = cross(x_1198, vec3<f32>(0.0, 1.0, 0.0));
-  let x_1201 : vec3<f32> = *(cam_forward);
-  let x_1202 : vec3<f32> = cam_right;
-  cam_up = cross(x_1201, x_1202);
-  fov = 1.134464025;
-  let x_1206 : vec3<f32> = *(cam_forward);
-  let x_1207 : f32 = fov;
-  let x_1210 : vec3<f32> = cam_right;
-  let x_1212 : f32 = lens_uv.x;
-  let x_1214 : f32 = fov;
-  let x_1218 : vec3<f32> = cam_up;
-  let x_1220 : f32 = lens_uv.y;
-  let x_1222 : f32 = fov;
-  return normalize((((x_1206 * cos(x_1207)) + ((x_1210 * x_1212) * sin(x_1214))) + ((x_1218 * x_1220) * sin(x_1222))));
-}
-
-fn Hash_f1_(seed : ptr<function, f32>) -> vec2<f32> {
-  var n : vec2<f32>;
-  let x_240 : f32 = *(seed);
-  let x_247 : f32 = *(seed);
-  n = vec2<f32>(dot(vec2<f32>(x_240, -0.100000001), vec2<f32>(13.876796722, 22.209148407)), dot(vec2<f32>(x_247, -0.200000003), vec2<f32>(12.343221664, 48.057937622)));
-  let x_255 : vec2<f32> = n;
-  return fract((sin(x_255) * 24791.81640625));
-}
-
-fn BlueNoise_vf2_(uv : ptr<function, vec2<f32>>) -> vec4<f32> {
-  let x_272 : vec2<f32> = *(uv);
-  let x_273 : vec4<f32> = textureSample(blue_noise, blue_noise_smplr, x_272);
-  return x_273;
-}
-
-fn BlueNoiseWithRandomOffset_vf2_f1_(screen_position : ptr<function, vec2<f32>>, seed_1 : ptr<function, f32>) -> vec4<f32> {
-  var param : f32;
-  var param_1 : vec2<f32>;
-  let x_276 : vec2<f32> = *(screen_position);
-  let x_281 : f32 = *(seed_1);
-  param = x_281;
-  let x_282 : vec2<f32> = Hash_f1_(&(param));
-  param_1 = ((x_276 / vec2<f32>(256.0, 256.0)) + x_282);
-  let x_285 : vec4<f32> = BlueNoise_vf2_(&(param_1));
-  return x_285;
-}
-
-fn CuboidDistance_vf3_vf3_(sample_position_1 : ptr<function, vec3<f32>>, cuboid_size : ptr<function, vec3<f32>>) -> f32 {
-  var space : vec3<f32>;
-  let x_297 : vec3<f32> = *(sample_position_1);
-  let x_299 : vec3<f32> = *(cuboid_size);
-  space = (abs(x_297) - x_299);
-  let x_301 : vec3<f32> = space;
-  let x_306 : f32 = space.x;
-  let x_308 : f32 = space.y;
-  let x_310 : f32 = space.z;
-  return (length(max(x_301, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_306, max(x_308, x_310)), 0.0));
-}
-
-fn FlutterLogoField_vf3_(pos_1 : ptr<function, vec3<f32>>) -> vec2<f32> {
-  var r_1 : vec3<f32>;
-  var logo_basis : mat3x3<f32>;
-  var logo_pos : vec3<f32>;
-  var logo0 : f32;
-  var param_5 : vec3<f32>;
-  var param_6 : vec3<f32>;
-  var logo0_cutoff_plane : f32;
-  var dist_1 : f32;
-  var material_2 : f32;
-  var logo1 : f32;
-  var param_7 : vec3<f32>;
-  var param_8 : vec3<f32>;
-  var logo1_cutoff_plane : f32;
-  var material_cutoff_plane : f32;
-  var logo2 : f32;
-  var param_9 : vec3<f32>;
-  var param_10 : vec3<f32>;
-  let x_360 : vec3<f32> = *(pos_1);
-  *(pos_1) = (x_360 * 1.299999952);
-  let x_364 : f32 = frag_info.time;
-  let x_371 : f32 = frag_info.time;
-  let x_380 : f32 = frag_info.time;
-  r_1 = vec3<f32>((sin((x_364 * 1.136999965)) / 7.0), (sin(((x_371 * 1.398000002) + 0.699999988)) / 8.0), (sin(((x_380 * 0.873000026) + 0.300000012)) / 5.0));
-  let x_391 : f32 = r_1.z;
-  let x_394 : f32 = r_1.y;
-  let x_398 : f32 = r_1.z;
-  let x_401 : f32 = r_1.y;
-  let x_405 : f32 = r_1.z;
-  let x_409 : f32 = r_1.z;
-  let x_412 : f32 = r_1.x;
-  let x_416 : f32 = r_1.x;
-  let x_420 : f32 = r_1.y;
-  let x_423 : f32 = r_1.x;
-  let x_426 : f32 = r_1.x;
-  let x_429 : f32 = r_1.y;
-  logo_basis = mat3x3<f32>(vec3<f32>((cos(x_391) * cos(x_394)), sin(x_398), -(sin(x_401))), vec3<f32>(-(sin(x_405)), (cos(x_409) * cos(x_412)), -(sin(x_416))), vec3<f32>(sin(x_420), sin(x_423), (cos(x_426) * cos(x_429))));
-  let x_437 : mat3x3<f32> = logo_basis;
-  let x_438 : vec3<f32> = *(pos_1);
-  let x_443 : f32 = frag_info.time;
-  logo_pos = ((x_437 * x_438) + vec3<f32>(-1.0, (-4.0 + sin(x_443)), 0.0));
-  let x_449 : vec3<f32> = logo_pos;
-  let x_451 : f32 = logo_pos.y;
-  param_5 = (x_449 + vec3<f32>(-(x_451), 0.0, 0.0));
-  param_6 = vec3<f32>(1.0, 2.0, 0.600000024);
-  let x_460 : f32 = CuboidDistance_vf3_vf3_(&(param_5), &(param_6));
-  logo0 = (x_460 * 0.543928266);
-  let x_464 : vec3<f32> = logo_pos;
-  logo0_cutoff_plane = dot((x_464 + vec3<f32>(0.5, 0.5, 0.0)), vec3<f32>(0.707106769, 0.707106769, 0.0));
-  let x_471 : f32 = logo0;
-  let x_472 : f32 = logo0_cutoff_plane;
-  logo0 = max(x_471, x_472);
-  let x_475 : f32 = logo0;
-  dist_1 = x_475;
-  material_2 = 1.0;
-  let x_478 : vec3<f32> = logo_pos;
-  let x_480 : f32 = logo_pos.y;
-  param_7 = (x_478 + vec3<f32>(x_480, 0.0, 0.0));
-  param_8 = vec3<f32>(1.0, 2.0, 0.699999988);
-  let x_486 : f32 = CuboidDistance_vf3_vf3_(&(param_7), &(param_8));
-  logo1 = (x_486 * 0.543928266);
-  let x_489 : vec3<f32> = logo_pos;
-  logo1_cutoff_plane = dot((x_489 + vec3<f32>(-0.5, 0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0));
-  let x_496 : f32 = logo1;
-  let x_497 : f32 = logo1_cutoff_plane;
-  logo1 = max(x_496, x_497);
-  let x_499 : f32 = logo1;
-  let x_500 : f32 = dist_1;
-  if ((x_499 < x_500)) {
-    let x_504 : f32 = logo1;
-    dist_1 = x_504;
-    let x_506 : vec3<f32> = logo_pos;
-    material_cutoff_plane = dot((x_506 + vec3<f32>(0.5, -0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0));
-    let x_510 : f32 = material_cutoff_plane;
-    material_2 = select(3.0, 2.0, (x_510 > 0.0));
-  }
-  let x_514 : vec3<f32> = logo_pos;
-  let x_516 : f32 = logo_pos.y;
-  param_9 = (x_514 + vec3<f32>((x_516 - 3.0), -2.0, 0.0));
-  param_10 = vec3<f32>(1.0, 3.5, 0.699999988);
-  let x_525 : f32 = CuboidDistance_vf3_vf3_(&(param_9), &(param_10));
-  logo2 = (x_525 * 0.543928266);
-  let x_527 : f32 = logo2;
-  let x_528 : f32 = logo1_cutoff_plane;
-  logo2 = max(x_527, x_528);
-  let x_530 : f32 = logo2;
-  let x_531 : f32 = dist_1;
-  if ((x_530 < x_531)) {
-    let x_535 : f32 = logo2;
-    dist_1 = x_535;
-    material_2 = 3.0;
-  }
-  let x_536 : f32 = dist_1;
-  let x_537 : f32 = material_2;
-  return vec2<f32>(x_536, x_537);
-}
-
-fn SphereDistance_vf3_vf3_f1_(sample_position : ptr<function, vec3<f32>>, sphere_position : ptr<function, vec3<f32>>, sphere_size : ptr<function, f32>) -> f32 {
-  let x_288 : vec3<f32> = *(sample_position);
-  let x_289 : vec3<f32> = *(sphere_position);
-  let x_292 : f32 = *(sphere_size);
-  return (length((x_288 - x_289)) - x_292);
-}
-
-fn ImpellerField_vf3_(pos_3 : ptr<function, vec3<f32>>) -> vec2<f32> {
-  var xz_dist : f32;
-  var impeller : f32;
-  var impeller_side : f32;
-  var stage_height : f32;
-  var stage_plane : f32;
-  var stage_sphere : f32;
-  var param_13 : vec3<f32>;
-  var param_14 : vec3<f32>;
-  var param_15 : f32;
-  var stage : f32;
-  var material_4 : f32;
-  var x_641 : bool;
-  var x_642_phi : bool;
-  let x_569 : vec3<f32> = *(pos_3);
-  xz_dist = length(vec2<f32>(x_569.x, x_569.z));
-  let x_573 : f32 = xz_dist;
-  let x_576 : f32 = xz_dist;
-  let x_579 : f32 = frag_info.time;
-  let x_586 : f32 = (*(pos_3)).z;
-  let x_588 : f32 = (*(pos_3)).x;
-  impeller = ((min(0.5, (x_573 / 3.0)) * sin((((x_576 * 2.0) - ((x_579 - (3.141592741 * floor((x_579 / 3.141592741)))) * 30.0)) + (atan2(x_586, x_588) * 6.0)))) * 1.5);
-  let x_598 : f32 = xz_dist;
-  impeller_side = ((x_598 / 2.0) - 4.0);
-  let x_603 : f32 = impeller;
-  let x_604 : f32 = impeller_side;
-  let x_605 : f32 = xz_dist;
-  stage_height = mix(x_603, x_604, clamp((x_605 - 4.599999905), 0.0, 1.0));
-  let x_611 : vec3<f32> = *(pos_3);
-  let x_612 : f32 = stage_height;
-  stage_plane = (dot((x_611 + vec3<f32>(0.0, (3.0 + x_612), 0.0)), vec3<f32>(0.0, 1.0, 0.0)) * 0.5);
-  let x_620 : vec3<f32> = *(pos_3);
-  param_13 = (x_620 + vec3<f32>(0.0, 2.0, 0.0));
-  param_14 = vec3<f32>(0.0, 0.0, 0.0);
-  param_15 = 6.0;
-  let x_627 : f32 = SphereDistance_vf3_vf3_f1_(&(param_13), &(param_14), &(param_15));
-  stage_sphere = x_627;
-  let x_629 : f32 = stage_plane;
-  let x_630 : f32 = stage_sphere;
-  stage = max(x_629, x_630);
-  material_4 = 4.0;
-  let x_633 : f32 = xz_dist;
-  let x_635 : bool = (x_633 < 5.599999905);
-  x_642_phi = x_635;
-  if (x_635) {
-    let x_639 : f32 = (*(pos_3)).y;
-    x_641 = (x_639 > -7.0);
-    x_642_phi = x_641;
-  }
-  var x_654 : bool;
-  var x_655_phi : bool;
-  let x_642 : bool = x_642_phi;
-  if (x_642) {
-    let x_646 : f32 = (*(pos_3)).y;
-    let x_648 : bool = (x_646 > -2.359999895);
-    x_655_phi = x_648;
-    if (x_648) {
-      let x_652 : f32 = (*(pos_3)).y;
-      x_654 = (x_652 < -2.099999905);
-      x_655_phi = x_654;
-    }
-    let x_655 : bool = x_655_phi;
-    material_4 = select(6.0, 5.0, x_655);
-  } else {
-    material_4 = 4.0;
-  }
-  let x_658 : f32 = stage;
-  let x_659 : f32 = material_4;
-  return vec2<f32>(x_658, x_659);
-}
-
-fn ShadowField_vf3_(pos_5 : ptr<function, vec3<f32>>) -> vec2<f32> {
-  var flutter_logo_1 : vec2<f32>;
-  var param_18 : vec3<f32>;
-  var dist_4 : f32;
-  var material_6 : f32;
-  var impeller_2 : vec2<f32>;
-  var param_19 : vec3<f32>;
-  let x_693 : vec3<f32> = *(pos_5);
-  param_18 = x_693;
-  let x_694 : vec2<f32> = FlutterLogoField_vf3_(&(param_18));
-  flutter_logo_1 = x_694;
-  let x_697 : f32 = flutter_logo_1.x;
-  dist_4 = x_697;
-  let x_700 : f32 = flutter_logo_1.y;
-  material_6 = x_700;
-  let x_703 : vec3<f32> = *(pos_5);
-  param_19 = x_703;
-  let x_704 : vec2<f32> = ImpellerField_vf3_(&(param_19));
-  impeller_2 = x_704;
-  let x_706 : f32 = impeller_2.x;
-  let x_707 : f32 = dist_4;
-  if ((x_706 < x_707)) {
-    let x_712 : f32 = impeller_2.x;
-    dist_4 = x_712;
-    let x_714 : f32 = impeller_2.y;
-    material_6 = x_714;
-  }
-  let x_715 : f32 = dist_4;
-  let x_716 : f32 = material_6;
-  return vec2<f32>(x_715, x_716);
-}
-
-fn RotateEuler_vf3_(r : ptr<function, vec3<f32>>) -> mat3x3<f32> {
-  let x_122 : f32 = (*(r)).x;
-  let x_126 : f32 = (*(r)).y;
-  let x_130 : f32 = (*(r)).x;
-  let x_133 : f32 = (*(r)).y;
-  let x_138 : f32 = (*(r)).z;
-  let x_142 : f32 = (*(r)).x;
-  let x_145 : f32 = (*(r)).z;
-  let x_150 : f32 = (*(r)).x;
-  let x_153 : f32 = (*(r)).y;
-  let x_157 : f32 = (*(r)).z;
-  let x_161 : f32 = (*(r)).x;
-  let x_164 : f32 = (*(r)).z;
-  let x_169 : f32 = (*(r)).x;
-  let x_172 : f32 = (*(r)).y;
-  let x_176 : f32 = (*(r)).x;
-  let x_179 : f32 = (*(r)).y;
-  let x_183 : f32 = (*(r)).z;
-  let x_187 : f32 = (*(r)).x;
-  let x_190 : f32 = (*(r)).z;
-  let x_195 : f32 = (*(r)).x;
-  let x_198 : f32 = (*(r)).y;
-  let x_202 : f32 = (*(r)).z;
-  let x_206 : f32 = (*(r)).x;
-  let x_209 : f32 = (*(r)).z;
-  let x_214 : f32 = (*(r)).y;
-  let x_218 : f32 = (*(r)).y;
-  let x_221 : f32 = (*(r)).z;
-  let x_225 : f32 = (*(r)).y;
-  let x_228 : f32 = (*(r)).z;
-  return mat3x3<f32>(vec3<f32>((cos(x_122) * cos(x_126)), (((cos(x_130) * sin(x_133)) * sin(x_138)) - (sin(x_142) * cos(x_145))), (((cos(x_150) * sin(x_153)) * cos(x_157)) + (sin(x_161) * sin(x_164)))), vec3<f32>((sin(x_169) * cos(x_172)), (((sin(x_176) * sin(x_179)) * sin(x_183)) + (cos(x_187) * cos(x_190))), (((sin(x_195) * sin(x_198)) * cos(x_202)) - (cos(x_206) * sin(x_209)))), vec3<f32>(-(sin(x_214)), (cos(x_218) * sin(x_221)), (cos(x_225) * cos(x_228))));
-}
-
-fn GlassBox_vf3_(pos : ptr<function, vec3<f32>>) -> f32 {
-  var basis : mat3x3<f32>;
-  var param_2 : vec3<f32>;
-  var glass_box_pos : vec3<f32>;
-  var param_3 : vec3<f32>;
-  var param_4 : vec3<f32>;
-  let x_325 : f32 = frag_info.time;
-  let x_329 : f32 = frag_info.time;
-  let x_333 : f32 = frag_info.time;
-  param_2 = vec3<f32>((x_325 * 0.209999993), (x_329 * 0.239999995), (x_333 * 0.170000002));
-  let x_338 : mat3x3<f32> = RotateEuler_vf3_(&(param_2));
-  basis = x_338;
-  let x_340 : vec3<f32> = *(pos);
-  let x_343 : f32 = frag_info.time;
-  glass_box_pos = (x_340 + vec3<f32>(0.0, (-4.5 + sin(x_343)), 0.0));
-  let x_348 : mat3x3<f32> = basis;
-  let x_349 : vec3<f32> = glass_box_pos;
-  param_3 = (x_348 * x_349);
-  param_4 = vec3<f32>(1.0, 1.0, 1.0);
-  let x_354 : f32 = CuboidDistance_vf3_vf3_(&(param_3), &(param_4));
-  return (x_354 - 3.0);
-}
-
-fn InnerGlassBoxField_vf3_(pos_2 : ptr<function, vec3<f32>>) -> vec2<f32> {
-  var flutter_logo : vec2<f32>;
-  var param_11 : vec3<f32>;
-  var dist_2 : f32;
-  var material_3 : f32;
-  var glass_box : f32;
-  var param_12 : vec3<f32>;
-  let x_543 : vec3<f32> = *(pos_2);
-  param_11 = x_543;
-  let x_544 : vec2<f32> = FlutterLogoField_vf3_(&(param_11));
-  flutter_logo = x_544;
-  let x_547 : f32 = flutter_logo.x;
-  dist_2 = x_547;
-  let x_550 : f32 = flutter_logo.y;
-  material_3 = x_550;
-  let x_553 : vec3<f32> = *(pos_2);
-  param_12 = x_553;
-  let x_554 : f32 = GlassBox_vf3_(&(param_12));
-  glass_box = -(x_554);
-  let x_556 : f32 = glass_box;
-  let x_557 : f32 = dist_2;
-  if ((x_556 < x_557)) {
-    let x_561 : f32 = glass_box;
-    dist_2 = x_561;
-    material_3 = -3.0;
-  }
-  let x_563 : f32 = dist_2;
-  let x_564 : f32 = material_3;
-  return vec2<f32>(x_563, x_564);
-}
-
-fn SceneField_vf3_(pos_4 : ptr<function, vec3<f32>>) -> vec2<f32> {
-  var glass_box_1 : f32;
-  var param_16 : vec3<f32>;
-  var dist_3 : f32;
-  var material_5 : f32;
-  var impeller_1 : vec2<f32>;
-  var param_17 : vec3<f32>;
-  let x_665 : vec3<f32> = *(pos_4);
-  param_16 = x_665;
-  let x_666 : f32 = GlassBox_vf3_(&(param_16));
-  glass_box_1 = x_666;
-  let x_668 : f32 = glass_box_1;
-  dist_3 = x_668;
-  material_5 = -2.0;
-  let x_672 : vec3<f32> = *(pos_4);
-  param_17 = x_672;
-  let x_673 : vec2<f32> = ImpellerField_vf3_(&(param_17));
-  impeller_1 = x_673;
-  let x_675 : f32 = impeller_1.x;
-  let x_676 : f32 = dist_3;
-  if ((x_675 < x_676)) {
-    let x_681 : f32 = impeller_1.x;
-    dist_3 = x_681;
-    let x_683 : f32 = impeller_1.y;
-    material_5 = x_683;
-  }
-  let x_684 : f32 = dist_3;
-  let x_687 : f32 = material_5;
-  return vec2<f32>((x_684 - 0.01), x_687);
-}
-
-fn March_vf3_vf3_i1_b1_b1_(sample_position_2 : ptr<function, vec3<f32>>, dir : ptr<function, vec3<f32>>, steps_taken : ptr<function, i32>, inside_glass_box : ptr<function, bool>, shadow : ptr<function, bool>) -> vec2<f32> {
-  var depth : f32;
-  var i : i32;
-  var pos_6 : vec3<f32>;
-  var result : vec2<f32>;
-  var param_20 : vec3<f32>;
-  var x_754 : vec2<f32>;
-  var param_21 : vec3<f32>;
-  var param_22 : vec3<f32>;
-  depth = 0.0;
-  i = 0i;
-  loop {
-    let x_728 : i32 = i;
-    if ((x_728 < 70i)) {
-    } else {
-      break;
-    }
-    let x_731 : f32 = depth;
-    if ((x_731 > 300.0)) {
-      let x_736 : i32 = i;
-      *(steps_taken) = x_736;
-      return vec2<f32>(300.0, -1.0);
-    }
-    let x_740 : vec3<f32> = *(sample_position_2);
-    let x_741 : vec3<f32> = *(dir);
-    let x_742 : f32 = depth;
-    pos_6 = (x_740 + (x_741 * x_742));
-    let x_745 : bool = *(shadow);
-    if (x_745) {
-      let x_750 : vec3<f32> = pos_6;
-      param_20 = x_750;
-      let x_751 : vec2<f32> = ShadowField_vf3_(&(param_20));
-      result = x_751;
-    } else {
-      let x_753 : bool = *(inside_glass_box);
-      if (x_753) {
-        let x_758 : vec3<f32> = pos_6;
-        param_21 = x_758;
-        let x_759 : vec2<f32> = InnerGlassBoxField_vf3_(&(param_21));
-        x_754 = x_759;
-      } else {
-        let x_762 : vec3<f32> = pos_6;
-        param_22 = x_762;
-        let x_763 : vec2<f32> = SceneField_vf3_(&(param_22));
-        x_754 = x_763;
-      }
-      let x_764 : vec2<f32> = x_754;
-      result = x_764;
-    }
-    let x_766 : f32 = result.x;
-    if ((abs(x_766) < 0.001)) {
-      let x_772 : i32 = i;
-      *(steps_taken) = x_772;
-      let x_773 : f32 = depth;
-      let x_775 : f32 = result.y;
-      return vec2<f32>(x_773, x_775);
-    }
-    let x_779 : f32 = result.x;
-    let x_780 : f32 = depth;
-    depth = (x_780 + x_779);
-
-    continuing {
-      let x_782 : i32 = i;
-      i = (x_782 + 1i);
-    }
-  }
-  *(steps_taken) = 70i;
-  return vec2<f32>(300.0, -1.0);
-}
-
-fn SceneGradient_vf3_(sample_position_3 : ptr<function, vec3<f32>>) -> vec3<f32> {
-  var param_23 : vec3<f32>;
-  var param_24 : vec3<f32>;
-  var param_25 : vec3<f32>;
-  var param_26 : vec3<f32>;
-  var param_27 : vec3<f32>;
-  var param_28 : vec3<f32>;
-  let x_786 : vec3<f32> = *(sample_position_3);
-  param_23 = (x_786 + vec3<f32>(0.001, 0.0, 0.0));
-  let x_790 : vec2<f32> = SceneField_vf3_(&(param_23));
-  let x_792 : vec3<f32> = *(sample_position_3);
-  param_24 = (x_792 + vec3<f32>(-0.001, 0.0, 0.0));
-  let x_797 : vec2<f32> = SceneField_vf3_(&(param_24));
-  let x_800 : vec3<f32> = *(sample_position_3);
-  param_25 = (x_800 + vec3<f32>(0.0, 0.001, 0.0));
-  let x_804 : vec2<f32> = SceneField_vf3_(&(param_25));
-  let x_806 : vec3<f32> = *(sample_position_3);
-  param_26 = (x_806 + vec3<f32>(0.0, -0.001, 0.0));
-  let x_810 : vec2<f32> = SceneField_vf3_(&(param_26));
-  let x_813 : vec3<f32> = *(sample_position_3);
-  param_27 = (x_813 + vec3<f32>(0.0, 0.0, 0.001));
-  let x_817 : vec2<f32> = SceneField_vf3_(&(param_27));
-  let x_819 : vec3<f32> = *(sample_position_3);
-  param_28 = (x_819 + vec3<f32>(0.0, 0.0, -0.001));
-  let x_823 : vec2<f32> = SceneField_vf3_(&(param_28));
-  return normalize(vec3<f32>((x_790.x - x_797.x), (x_804.x - x_810.x), (x_817.x - x_823.x)));
-}
-
-fn EnvironmentColor_vf3_(ray_direction : ptr<function, vec3<f32>>) -> vec4<f32> {
-  let x_913 : vec3<f32> = *(ray_direction);
-  let x_914 : vec4<f32> = textureSample(cube_map, cube_map_smplr, x_913);
-  return x_914;
-}
-
-fn InnerGlassGradient_vf3_(sample_position_4 : ptr<function, vec3<f32>>) -> vec3<f32> {
-  var param_29 : vec3<f32>;
-  var param_30 : vec3<f32>;
-  var param_31 : vec3<f32>;
-  var param_32 : vec3<f32>;
-  var param_33 : vec3<f32>;
-  var param_34 : vec3<f32>;
-  let x_830 : vec3<f32> = *(sample_position_4);
-  param_29 = (x_830 + vec3<f32>(0.001, 0.0, 0.0));
-  let x_833 : vec2<f32> = InnerGlassBoxField_vf3_(&(param_29));
-  let x_835 : vec3<f32> = *(sample_position_4);
-  param_30 = (x_835 + vec3<f32>(-0.001, 0.0, 0.0));
-  let x_838 : vec2<f32> = InnerGlassBoxField_vf3_(&(param_30));
-  let x_841 : vec3<f32> = *(sample_position_4);
-  param_31 = (x_841 + vec3<f32>(0.0, 0.001, 0.0));
-  let x_844 : vec2<f32> = InnerGlassBoxField_vf3_(&(param_31));
-  let x_846 : vec3<f32> = *(sample_position_4);
-  param_32 = (x_846 + vec3<f32>(0.0, -0.001, 0.0));
-  let x_849 : vec2<f32> = InnerGlassBoxField_vf3_(&(param_32));
-  let x_852 : vec3<f32> = *(sample_position_4);
-  param_33 = (x_852 + vec3<f32>(0.0, 0.0, 0.001));
-  let x_855 : vec2<f32> = InnerGlassBoxField_vf3_(&(param_33));
-  let x_857 : vec3<f32> = *(sample_position_4);
-  param_34 = (x_857 + vec3<f32>(0.0, 0.0, -0.001));
-  let x_860 : vec2<f32> = InnerGlassBoxField_vf3_(&(param_34));
-  return normalize(vec3<f32>((x_833.x - x_838.x), (x_844.x - x_849.x), (x_855.x - x_860.x)));
-}
-
-fn MarchShadow_vf3_(position : ptr<function, vec3<f32>>) -> f32 {
-  var shadow_result : vec2<f32>;
-  var shadow_steps : i32;
-  var param_35 : vec3<f32>;
-  var param_36 : vec3<f32>;
-  var param_37 : i32;
-  var param_38 : bool;
-  var param_39 : bool;
-  var shadow_percentage : f32;
-  var shadow_multiplier_2 : f32;
-  let x_868 : vec3<f32> = *(position);
-  param_35 = (x_868 + vec3<f32>(-0.009733285, 0.024333213, -0.014599928));
-  param_36 = vec3<f32>(-0.324442834, 0.811107099, -0.486664265);
-  param_38 = false;
-  param_39 = true;
-  let x_886 : vec2<f32> = March_vf3_vf3_i1_b1_b1_(&(param_35), &(param_36), &(param_37), &(param_38), &(param_39));
-  let x_887 : i32 = param_37;
-  shadow_steps = x_887;
-  shadow_result = x_886;
-  let x_889 : i32 = shadow_steps;
-  shadow_percentage = (f32(x_889) / 70.0);
-  let x_895 : f32 = shadow_percentage;
-  shadow_multiplier_2 = (1.600000024 - x_895);
-  let x_898 : f32 = shadow_result.x;
-  if ((x_898 < 300.0)) {
-    shadow_multiplier_2 = 0.600000024;
-  }
-  let x_902 : f32 = shadow_multiplier_2;
-  return x_902;
-}
-
-fn SurfaceColor_vf3_vf3_vf3_f1_f1_(ray_direction_1 : ptr<function, vec3<f32>>, surface_position : ptr<function, vec3<f32>>, surface_normal : ptr<function, vec3<f32>>, material : ptr<function, f32>, shadow_multiplier : ptr<function, f32>) -> vec4<f32> {
-  var reflection_direction : vec3<f32>;
-  var reflection_color : vec4<f32>;
-  var material_value : vec4<f32>;
-  let x_918 : vec3<f32> = *(ray_direction_1);
-  let x_919 : vec3<f32> = *(surface_normal);
-  reflection_direction = reflect(x_918, x_919);
-  let x_925 : vec3<f32> = reflection_direction;
-  let x_926 : vec4<f32> = textureSample(cube_map, cube_map_smplr, x_925);
-  reflection_color = x_926;
-  let x_927 : f32 = *(material);
-  if ((x_927 < 1.5)) {
-    material_value = vec4<f32>(0.0, 0.340000004, 0.610000014, 0.5);
-  } else {
-    let x_936 : f32 = *(material);
-    if ((x_936 < 2.5)) {
-      material_value = vec4<f32>(0.159999996, 0.709999979, 0.959999979, 0.5);
-    } else {
-      let x_946 : f32 = *(material);
-      if ((x_946 < 3.5)) {
-        material_value = vec4<f32>(0.330000013, 0.769999981, 0.970000029, 0.5);
-      } else {
-        let x_955 : f32 = *(material);
-        if ((x_955 < 4.5)) {
-          material_value = vec4<f32>(0.159999996, 0.709999979, 0.959999979, 0.5);
-        } else {
-          let x_961 : f32 = *(material);
-          if ((x_961 < 5.5)) {
-            material_value = vec4<f32>(0.100000001, 0.100000001, 0.100000001, 0.0);
-          } else {
-            material_value = vec4<f32>(0.100000001, 0.100000001, 0.100000001, 1.299999952);
-          }
-        }
-      }
-    }
-  }
-  let x_970 : vec4<f32> = material_value;
-  let x_972 : f32 = *(shadow_multiplier);
-  let x_973 : vec3<f32> = (vec3<f32>(x_970.x, x_970.y, x_970.z) * x_972);
-  let x_978 : vec4<f32> = reflection_color;
-  let x_979 : vec3<f32> = *(ray_direction_1);
-  let x_981 : vec3<f32> = *(surface_normal);
-  let x_986 : f32 = material_value.w;
-  let x_987 : f32 = ((dot(-(x_979), x_981) - 1.0) + x_986);
-  return mix(vec4<f32>(x_973.x, x_973.y, x_973.z, 1.0), x_978, vec4<f32>(x_987, x_987, x_987, x_987));
-}
-
-fn SceneColor_vf3_vf3_vf3_f1_f1_i1_f1_vf4_(ray_position : ptr<function, vec3<f32>>, ray_direction_2 : ptr<function, vec3<f32>>, surface_normal_1 : ptr<function, vec3<f32>>, dist : ptr<function, f32>, material_1 : ptr<function, f32>, steps_taken_1 : ptr<function, i32>, shadow_multiplier_1 : ptr<function, f32>, ray_noise : ptr<function, vec4<f32>>) -> vec4<f32> {
-  var result_color : vec4<f32>;
-  var param_40 : vec3<f32>;
-  var surface_position_1 : vec3<f32>;
-  var param_41 : vec3<f32>;
-  var param_42 : vec3<f32>;
-  var param_43 : vec3<f32>;
-  var param_44 : f32;
-  var param_45 : f32;
-  var glow_factor : f32;
-  var glow_color : vec4<f32>;
-  let x_992 : f32 = *(dist);
-  if ((x_992 >= 300.0)) {
-    let x_998 : vec3<f32> = *(ray_direction_2);
-    param_40 = x_998;
-    let x_999 : vec4<f32> = EnvironmentColor_vf3_(&(param_40));
-    result_color = x_999;
-  } else {
-    let x_1002 : vec3<f32> = *(ray_position);
-    let x_1003 : vec3<f32> = *(ray_direction_2);
-    let x_1004 : f32 = *(dist);
-    surface_position_1 = (x_1002 + (x_1003 * x_1004));
-    let x_1008 : vec3<f32> = *(ray_direction_2);
-    param_41 = x_1008;
-    let x_1010 : vec3<f32> = surface_position_1;
-    param_42 = x_1010;
-    let x_1012 : vec3<f32> = *(surface_normal_1);
-    param_43 = x_1012;
-    let x_1014 : f32 = *(material_1);
-    param_44 = x_1014;
-    let x_1016 : f32 = *(shadow_multiplier_1);
-    param_45 = x_1016;
-    let x_1017 : vec4<f32> = SurfaceColor_vf3_vf3_vf3_f1_f1_(&(param_41), &(param_42), &(param_43), &(param_44), &(param_45));
-    result_color = x_1017;
-  }
-  let x_1019 : i32 = *(steps_taken_1);
-  glow_factor = (f32(x_1019) / 70.0);
-  let x_1029 : f32 = frag_info.time;
-  let x_1033 : f32 = ((sin((x_1029 / 3.0)) * 0.5) + 0.5);
-  glow_color = mix(vec4<f32>(0.860000014, 0.980000019, 1.0, 1.0), vec4<f32>(1.659999967, 0.980000019, 0.5, 1.0), vec4<f32>(x_1033, x_1033, x_1033, x_1033));
-  let x_1036 : vec4<f32> = result_color;
-  let x_1037 : vec4<f32> = glow_color;
-  let x_1038 : f32 = glow_factor;
-  let x_1040 : f32 = (x_1038 * 1.100000024);
-  return mix(x_1036, x_1037, vec4<f32>(x_1040, x_1040, x_1040, x_1040));
-}
-
-fn CombinedColor_vf3_vf3_vf4_(ray_position_1 : ptr<function, vec3<f32>>, ray_direction_3 : ptr<function, vec3<f32>>, ray_noise_1 : ptr<function, vec4<f32>>) -> vec4<f32> {
-  var result_1 : vec2<f32>;
-  var steps_taken_2 : i32;
-  var param_46 : vec3<f32>;
-  var param_47 : vec3<f32>;
-  var param_48 : i32;
-  var param_49 : bool;
-  var param_50 : bool;
-  var surface_normal_2 : vec3<f32>;
-  var param_51 : vec3<f32>;
-  var glass_reflection_factor : f32;
-  var glass_reflection_color : vec4<f32>;
-  var glass_reflection_direction : vec3<f32>;
-  var param_52 : vec3<f32>;
-  var steps : i32;
-  var param_53 : vec3<f32>;
-  var param_54 : vec3<f32>;
-  var param_55 : i32;
-  var param_56 : bool;
-  var param_57 : bool;
-  var param_58 : vec3<f32>;
-  var steps_1 : i32;
-  var param_59 : vec3<f32>;
-  var param_60 : vec3<f32>;
-  var param_61 : i32;
-  var param_62 : bool;
-  var param_63 : bool;
-  var param_64 : vec3<f32>;
-  var shadow_multiplier_3 : f32;
-  var param_65 : vec3<f32>;
-  var scene_color : vec4<f32>;
-  var param_66 : vec3<f32>;
-  var param_67 : vec3<f32>;
-  var param_68 : vec3<f32>;
-  var param_69 : f32;
-  var param_70 : f32;
-  var param_71 : i32;
-  var param_72 : f32;
-  var param_73 : vec4<f32>;
-  let x_1048 : vec3<f32> = *(ray_position_1);
-  param_46 = x_1048;
-  let x_1050 : vec3<f32> = *(ray_direction_3);
-  param_47 = x_1050;
-  param_49 = false;
-  param_50 = false;
-  let x_1054 : vec2<f32> = March_vf3_vf3_i1_b1_b1_(&(param_46), &(param_47), &(param_48), &(param_49), &(param_50));
-  let x_1055 : i32 = param_48;
-  steps_taken_2 = x_1055;
-  result_1 = x_1054;
-  let x_1056 : vec3<f32> = *(ray_position_1);
-  let x_1057 : vec3<f32> = *(ray_direction_3);
-  let x_1059 : f32 = result_1.x;
-  *(ray_position_1) = (x_1056 + (x_1057 * x_1059));
-  let x_1064 : vec3<f32> = *(ray_position_1);
-  param_51 = x_1064;
-  let x_1065 : vec3<f32> = SceneGradient_vf3_(&(param_51));
-  surface_normal_2 = x_1065;
-  glass_reflection_factor = 0.0;
-  glass_reflection_color = vec4<f32>(0.0, 0.0, 0.0, 0.0);
-  let x_1070 : f32 = result_1.y;
-  if ((x_1070 == -2.0)) {
-    let x_1075 : vec3<f32> = *(ray_direction_3);
-    let x_1076 : vec3<f32> = surface_normal_2;
-    glass_reflection_direction = reflect(x_1075, x_1076);
-    let x_1079 : vec3<f32> = glass_reflection_direction;
-    param_52 = x_1079;
-    let x_1080 : vec4<f32> = EnvironmentColor_vf3_(&(param_52));
-    glass_reflection_color = x_1080;
-    let x_1081 : vec3<f32> = glass_reflection_direction;
-    let x_1082 : vec3<f32> = surface_normal_2;
-    glass_reflection_factor = (0.5 - (dot(x_1081, x_1082) * 0.600000024));
-    let x_1086 : vec3<f32> = *(ray_direction_3);
-    let x_1087 : vec3<f32> = surface_normal_2;
-    *(ray_direction_3) = refract(x_1086, x_1087, 1.100000024);
-    let x_1089 : vec3<f32> = *(ray_direction_3);
-    let x_1091 : vec3<f32> = *(ray_position_1);
-    *(ray_position_1) = (x_1091 + (x_1089 * 0.5));
-    let x_1095 : vec3<f32> = *(ray_position_1);
-    param_53 = x_1095;
-    let x_1097 : vec3<f32> = *(ray_direction_3);
-    param_54 = x_1097;
-    param_56 = true;
-    param_57 = false;
-    let x_1101 : vec2<f32> = March_vf3_vf3_i1_b1_b1_(&(param_53), &(param_54), &(param_55), &(param_56), &(param_57));
-    let x_1102 : i32 = param_55;
-    steps = x_1102;
-    result_1 = x_1101;
-    let x_1103 : i32 = steps;
-    let x_1104 : i32 = steps_taken_2;
-    steps_taken_2 = (x_1104 + x_1103);
-    let x_1106 : vec3<f32> = *(ray_position_1);
-    let x_1107 : vec3<f32> = *(ray_direction_3);
-    let x_1109 : f32 = result_1.x;
-    *(ray_position_1) = (x_1106 + (x_1107 * x_1109));
-    let x_1113 : vec3<f32> = *(ray_position_1);
-    param_58 = x_1113;
-    let x_1114 : vec3<f32> = InnerGlassGradient_vf3_(&(param_58));
-    surface_normal_2 = x_1114;
-  }
-  let x_1116 : f32 = result_1.y;
-  if ((x_1116 == -3.0)) {
-    let x_1120 : vec3<f32> = *(ray_direction_3);
-    let x_1121 : vec3<f32> = surface_normal_2;
-    *(ray_direction_3) = refract(x_1120, x_1121, 0.909090936);
-    let x_1124 : vec3<f32> = *(ray_direction_3);
-    let x_1126 : vec3<f32> = *(ray_position_1);
-    *(ray_position_1) = (x_1126 + (x_1124 * 1.0));
-    let x_1128 : vec3<f32> = *(ray_position_1);
-    let x_1129 : vec3<f32> = *(ray_direction_3);
-    let x_1131 : f32 = result_1.x;
-    param_59 = (x_1128 + (x_1129 * x_1131));
-    let x_1137 : vec3<f32> = *(ray_direction_3);
-    param_60 = x_1137;
-    param_62 = false;
-    param_63 = false;
-    let x_1141 : vec2<f32> = March_vf3_vf3_i1_b1_b1_(&(param_59), &(param_60), &(param_61), &(param_62), &(param_63));
-    let x_1142 : i32 = param_61;
-    steps_1 = x_1142;
-    result_1 = x_1141;
-    let x_1143 : i32 = steps_1;
-    let x_1144 : i32 = steps_taken_2;
-    steps_taken_2 = (x_1144 + x_1143);
-    let x_1146 : vec3<f32> = *(ray_position_1);
-    let x_1147 : vec3<f32> = *(ray_direction_3);
-    let x_1149 : f32 = result_1.x;
-    *(ray_position_1) = (x_1146 + (x_1147 * x_1149));
-    let x_1153 : vec3<f32> = *(ray_position_1);
-    param_64 = x_1153;
-    let x_1154 : vec3<f32> = SceneGradient_vf3_(&(param_64));
-    surface_normal_2 = x_1154;
-  }
-  let x_1157 : vec3<f32> = *(ray_position_1);
-  param_65 = x_1157;
-  let x_1158 : f32 = MarchShadow_vf3_(&(param_65));
-  shadow_multiplier_3 = x_1158;
-  let x_1161 : vec3<f32> = *(ray_position_1);
-  param_66 = x_1161;
-  let x_1163 : vec3<f32> = *(ray_direction_3);
-  param_67 = x_1163;
-  let x_1165 : vec3<f32> = surface_normal_2;
-  param_68 = x_1165;
-  let x_1168 : f32 = result_1.x;
-  param_69 = x_1168;
-  let x_1171 : f32 = result_1.y;
-  param_70 = x_1171;
-  let x_1173 : i32 = steps_taken_2;
-  param_71 = x_1173;
-  let x_1175 : f32 = shadow_multiplier_3;
-  param_72 = x_1175;
-  let x_1177 : vec4<f32> = *(ray_noise_1);
-  param_73 = x_1177;
-  let x_1178 : vec4<f32> = SceneColor_vf3_vf3_vf3_f1_f1_i1_f1_vf4_(&(param_66), &(param_67), &(param_68), &(param_69), &(param_70), &(param_71), &(param_72), &(param_73));
-  scene_color = x_1178;
-  let x_1179 : vec4<f32> = scene_color;
-  let x_1180 : vec4<f32> = glass_reflection_color;
-  let x_1181 : f32 = glass_reflection_factor;
-  return mix(x_1179, x_1180, vec4<f32>(x_1181, x_1181, x_1181, x_1181));
-}
+var<private> x_1317 : vec4<f32>;
 
 fn main_1() {
-  var cam_time : f32;
-  var cam_position : vec3<f32>;
-  var cam_direction : vec3<f32>;
-  var ray_direction_4 : vec3<f32>;
-  var param_74 : vec2<f32>;
-  var param_75 : vec3<f32>;
-  var lens_position : vec3<f32>;
-  var i_1 : i32;
-  var ray_noise_2 : vec4<f32>;
-  var param_76 : vec2<f32>;
-  var param_77 : f32;
-  var ray_start : vec3<f32>;
-  var ray_direction_5 : vec3<f32>;
-  var result_color_1 : vec4<f32>;
-  var param_78 : vec3<f32>;
-  var param_79 : vec3<f32>;
-  var param_80 : vec4<f32>;
-  let x_1231 : f32 = frag_info.time;
-  cam_time = (x_1231 / 2.0);
-  let x_1234 : f32 = cam_time;
-  let x_1241 : f32 = cam_time;
-  let x_1248 : f32 = cam_time;
-  cam_position = (vec3<f32>((-(sin((x_1234 + 0.200000003))) * 6.25), ((-(cos((x_1241 + 0.300000012))) * 2.900000095) + 1.0), (-(cos((x_1248 - 0.100000001))) * 5.400000095)) * 2.0);
-  let x_1257 : vec3<f32> = cam_position;
-  cam_direction = normalize(-(x_1257));
-  let x_1260 : vec3<f32> = cam_position;
-  cam_position = (x_1260 + vec3<f32>(0.0, 2.0, 0.0));
-  let x_1266 : vec2<f32> = v_screen_position;
-  param_74 = x_1266;
-  let x_1268 : vec3<f32> = cam_direction;
-  param_75 = x_1268;
-  let x_1269 : vec3<f32> = GetFragDirection_vf2_vf3_(&(param_74), &(param_75));
-  ray_direction_4 = x_1269;
-  let x_1271 : vec3<f32> = cam_position;
-  let x_1272 : vec3<f32> = ray_direction_4;
-  lens_position = (x_1271 + (x_1272 * 12.0));
-  i_1 = 0i;
+  var x_14717_phi : i32;
+  var x_14576_phi : vec2<f32>;
+  var x_14246_phi : i32;
+  var x_14148_phi : vec2<f32>;
+  var x_13835_phi : i32;
+  var x_13774_phi : vec2<f32>;
+  var x_13486_phi : i32;
+  var x_13466_phi : vec2<f32>;
+  var x_13383_phi : i32;
+  let x_1231 : f32 = x_321.field1;
+  let x_1232 : f32 = (x_1231 * 0.5);
+  let x_1255 : vec3<f32> = (vec3<f32>((sin((x_1232 + 0.200000003)) * -6.25), ((cos((x_1232 + 0.300000012)) * -2.900000095) + 1.0), (cos((x_1232 - 0.100000001)) * -5.400000095)) * 2.0);
+  let x_1259 : vec3<f32> = normalize(-(x_1255));
+  let x_1261 : vec3<f32> = (x_1255 + vec3<f32>(0.0, 2.0, 0.0));
+  let x_1266 : vec2<f32> = x_1264;
+  let x_1344 : vec2<f32> = x_321.field0;
+  let x_1350 : vec2<f32> = ((x_1266 - (x_1344 * 0.5)) / vec2<f32>(x_1344.x, x_1344.x));
+  let x_1352 : vec3<f32> = cross(x_1259, vec3<f32>(0.0, 1.0, 0.0));
+  let x_1275 : vec3<f32> = (x_1261 + (normalize((((x_1259 * 0.42261824) + ((x_1352 * x_1350.x) * 0.906307817)) + ((cross(x_1259, x_1352) * x_1350.y) * 0.906307817))) * 12.0));
+  x_14717_phi = 0i;
+  x_14576_phi = vec2<f32>();
+  x_14246_phi = 0i;
+  x_14148_phi = vec2<f32>();
+  x_13835_phi = 0i;
+  x_13774_phi = vec2<f32>();
+  x_13486_phi = 0i;
+  x_13466_phi = vec2<f32>();
+  x_13383_phi = 0i;
   loop {
-    let x_1282 : i32 = i_1;
-    if ((x_1282 < 4i)) {
+    var x_13484 : i32;
+    var x_13464 : vec2<f32>;
+    var x_4375 : vec4<f32>;
+    var x_1474 : f32;
+    var x_1477 : vec3<f32>;
+    var x_13805 : i32;
+    var x_13744 : vec2<f32>;
+    var x_1488 : i32;
+    var x_1494 : vec3<f32>;
+    var x_5504 : vec3<f32>;
+    var x_1504 : vec3<f32>;
+    var x_14215 : i32;
+    var x_14117 : vec2<f32>;
+    var x_1520 : i32;
+    var x_1526 : vec3<f32>;
+    var x_9081 : vec3<f32>;
+    var x_14686 : i32;
+    var x_14545 : vec2<f32>;
+    var x_11945 : vec4<f32>;
+    var x_12002 : vec4<f32>;
+    var x_1324 : i32;
+    var x_13483_phi : i32;
+    var x_13463_phi : vec2<f32>;
+    var x_15693_phi : i32;
+    var x_15606_phi : vec2<f32>;
+    var x_15096_phi : f32;
+    var x_14991_phi : vec4<f32>;
+    var x_14316_phi : i32;
+    var x_14019_phi : vec3<f32>;
+    var x_14018_phi : vec3<f32>;
+    var x_13999_phi : vec3<f32>;
+    var x_13980_phi : vec2<f32>;
+    var x_15829_phi : i32;
+    var x_15779_phi : vec2<f32>;
+    var x_14939_phi : i32;
+    var x_14895_phi : vec2<f32>;
+    var x_14875_phi : vec3<f32>;
+    var x_14831_phi : vec3<f32>;
+    var x_14440_phi : vec3<f32>;
+    var x_14685_phi : i32;
+    var x_14544_phi : vec2<f32>;
+    var x_14984_phi : vec4<f32>;
+    let x_14717 : i32 = x_14717_phi;
+    let x_14576 : vec2<f32> = x_14576_phi;
+    let x_14246 : i32 = x_14246_phi;
+    let x_14148 : vec2<f32> = x_14148_phi;
+    let x_13835 : i32 = x_13835_phi;
+    let x_13774 : vec2<f32> = x_13774_phi;
+    let x_13486 : i32 = x_13486_phi;
+    let x_13466 : vec2<f32> = x_13466_phi;
+    let x_13383 : i32 = x_13383_phi;
+    if ((x_13383 < 4i)) {
     } else {
       break;
     }
-    let x_1286 : i32 = i_1;
-    let x_1289 : f32 = frag_info.time;
-    let x_1294 : vec2<f32> = v_screen_position;
-    param_76 = x_1294;
-    param_77 = (f32(x_1286) + (x_1289 - (10.0 * floor((x_1289 / 10.0)))));
-    let x_1296 : vec4<f32> = BlueNoiseWithRandomOffset_vf2_f1_(&(param_76), &(param_77));
-    ray_noise_2 = x_1296;
-    let x_1298 : vec3<f32> = cam_position;
-    let x_1299 : vec4<f32> = ray_noise_2;
-    ray_start = (x_1298 + (vec3<f32>(x_1299.x, x_1299.y, x_1299.z) * 0.5));
-    let x_1304 : vec3<f32> = lens_position;
-    let x_1305 : vec3<f32> = ray_start;
-    ray_direction_5 = normalize((x_1304 - x_1305));
-    let x_1310 : vec3<f32> = ray_start;
-    param_78 = x_1310;
-    let x_1312 : vec3<f32> = ray_direction_5;
-    param_79 = x_1312;
-    let x_1314 : vec4<f32> = ray_noise_2;
-    param_80 = x_1314;
-    let x_1315 : vec4<f32> = CombinedColor_vf3_vf3_vf4_(&(param_78), &(param_79), &(param_80));
-    result_color_1 = x_1315;
-    let x_1318 : vec4<f32> = result_color_1;
-    let x_1321 : vec4<f32> = frag_color;
-    frag_color = (x_1321 + (x_1318 / vec4<f32>(4.0, 4.0, 4.0, 4.0)));
+    var x_13384 : i32;
+    var x_1600 : vec2<f32>;
+    var x_13385_phi : f32;
+    var x_13384_phi : i32;
+    var x_13484_phi : i32;
+    var x_13464_phi : vec2<f32>;
+    var x_13446_phi : bool;
+    let x_1292 : f32 = (f32(x_13383) + (x_1231 - (10.0 * floor((x_1231 / 10.0)))));
+    let x_1408 : vec4<f32> = textureSample(x_264, x_268, ((x_1266 * vec2<f32>(0.00390625, 0.00390625)) + fract((sin(vec2<f32>(dot(vec2<f32>(x_1292, -0.100000001), vec2<f32>(13.876796722, 22.209148407)), dot(vec2<f32>(x_1292, -0.200000003), vec2<f32>(12.343221664, 48.057937622)))) * 24791.81640625))));
+    let x_1302 : vec3<f32> = (x_1261 + (vec3<f32>(x_1408.x, x_1408.y, x_1408.z) * 0.5));
+    let x_1307 : vec3<f32> = normalize((x_1275 - x_1302));
+    switch(0u) {
+      default: {
+        x_13385_phi = 0.0;
+        x_13384_phi = 0i;
+        loop {
+          var x_2613 : bool;
+          var x_2626 : f32;
+          var x_1608 : i32;
+          var x_2615_phi : bool;
+          var x_13386_phi : f32;
+          let x_13385 : f32 = x_13385_phi;
+          x_13384 = x_13384_phi;
+          x_13484_phi = x_13486;
+          x_13464_phi = x_13466;
+          x_13446_phi = false;
+          if ((x_13384 < 70i)) {
+          } else {
+            break;
+          }
+          if ((x_13385 > 300.0)) {
+            x_13484_phi = x_13384;
+            x_13464_phi = vec2<f32>(300.0, -1.0);
+            x_13446_phi = true;
+            break;
+          }
+          let x_1575 : vec3<f32> = (x_1302 + (x_1307 * x_13385));
+          let x_2394 : f32 = (x_1231 * 0.209999993);
+          let x_2397 : f32 = (x_1231 * 0.239999995);
+          let x_2400 : f32 = (x_1231 * 0.170000002);
+          let x_2419 : f32 = cos(x_2394);
+          let x_2422 : f32 = cos(x_2397);
+          let x_2429 : f32 = sin(x_2397);
+          let x_2430 : f32 = (x_2419 * x_2429);
+          let x_2433 : f32 = sin(x_2400);
+          let x_2437 : f32 = sin(x_2394);
+          let x_2440 : f32 = cos(x_2400);
+          let x_2475 : f32 = (x_2437 * x_2429);
+          let x_2535 : vec3<f32> = (abs((mat3x3<f32>(vec3<f32>((x_2419 * x_2422), ((x_2430 * x_2433) - (x_2437 * x_2440)), ((x_2430 * x_2440) + (x_2437 * x_2433))), vec3<f32>((x_2437 * x_2422), ((x_2475 * x_2433) + (x_2419 * x_2440)), ((x_2475 * x_2440) - (x_2419 * x_2433))), vec3<f32>(-(x_2429), (x_2422 * x_2433), (x_2422 * x_2440))) * (x_1575 + vec3<f32>(0.0, (-4.5 + sin(x_1231)), 0.0)))) - vec3<f32>(1.0, 1.0, 1.0));
+          let x_2414 : f32 = ((length(max(x_2535, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_2535.x, max(x_2535.y, x_2535.z)), 0.0)) - 3.0);
+          let x_2565 : f32 = length(vec2<f32>(x_1575.x, x_1575.z));
+          let x_2607 : f32 = max((((x_1575 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_2565 * 0.333333343)) * sin((((x_2565 * 2.0) - ((x_1231 - (3.141592741 * floor((x_1231 / 3.141592741)))) * 30.0)) + (atan2(x_1575.z, x_1575.x) * 6.0)))) * 1.5), ((x_2565 * 0.5) - 4.0), clamp((x_2565 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1575 + vec3<f32>(0.0, 2.0, 0.0))) - 6.0));
+          let x_2609 : bool = (x_2565 < 5.599999905);
+          x_2615_phi = x_2609;
+          if (x_2609) {
+            x_2613 = (x_1575.y > -7.0);
+            x_2615_phi = x_2613;
+          }
+          var x_2623 : bool;
+          var x_2625_phi : bool;
+          let x_2615 : bool = x_2615_phi;
+          if (x_2615) {
+            let x_2618 : f32 = x_1575.y;
+            let x_2619 : bool = (x_2618 > -2.359999895);
+            x_2625_phi = x_2619;
+            if (x_2619) {
+              x_2623 = (x_2618 < -2.099999905);
+              x_2625_phi = x_2623;
+            }
+            let x_2625 : bool = x_2625_phi;
+            x_2626 = select(6.0, 5.0, x_2625);
+            x_13386_phi = x_2626;
+          } else {
+            x_13386_phi = 4.0;
+          }
+          let x_13386 : f32 = x_13386_phi;
+          let x_2374 : bool = (x_2607 < x_2414);
+          let x_2382 : f32 = (select(x_2414, x_2607, x_2374) - 0.01);
+          if ((abs(x_2382) < 0.001)) {
+            x_1600 = vec2<f32>(x_13385, select(-2.0, x_13386, x_2374));
+            x_13484_phi = x_13384;
+            x_13464_phi = x_1600;
+            x_13446_phi = true;
+            break;
+          }
+
+          continuing {
+            x_1608 = bitcast<i32>((x_13384 + bitcast<i32>(1i)));
+            x_13385_phi = (x_13385 + x_2382);
+            x_13384_phi = x_1608;
+          }
+        }
+        x_13484 = x_13484_phi;
+        x_13464 = x_13464_phi;
+        let x_13446 : bool = x_13446_phi;
+        x_13483_phi = x_13484;
+        x_13463_phi = x_13464;
+        if (x_13446) {
+          break;
+        }
+        x_13483_phi = 70i;
+        x_13463_phi = vec2<f32>(300.0, -1.0);
+      }
+    }
+    var x_13806 : i32;
+    var x_13745 : vec2<f32>;
+    var x_13805_phi : i32;
+    var x_13744_phi : vec2<f32>;
+    let x_13483 : i32 = x_13483_phi;
+    let x_13463 : vec2<f32> = x_13463_phi;
+    let x_1458 : vec3<f32> = (x_1302 + (x_1307 * x_13463.x));
+    let x_2649 : vec3<f32> = (x_1458 + vec3<f32>(0.001, 0.0, 0.0));
+    let x_2713 : f32 = (x_1231 * 0.209999993);
+    let x_2716 : f32 = (x_1231 * 0.239999995);
+    let x_2719 : f32 = (x_1231 * 0.170000002);
+    let x_2738 : f32 = cos(x_2713);
+    let x_2741 : f32 = cos(x_2716);
+    let x_2748 : f32 = sin(x_2716);
+    let x_2749 : f32 = (x_2738 * x_2748);
+    let x_2752 : f32 = sin(x_2719);
+    let x_2756 : f32 = sin(x_2713);
+    let x_2759 : f32 = cos(x_2719);
+    let x_2794 : f32 = (x_2756 * x_2748);
+    let x_2847 : mat3x3<f32> = mat3x3<f32>(vec3<f32>((x_2738 * x_2741), ((x_2749 * x_2752) - (x_2756 * x_2759)), ((x_2749 * x_2759) + (x_2756 * x_2752))), vec3<f32>((x_2756 * x_2741), ((x_2794 * x_2752) + (x_2738 * x_2759)), ((x_2794 * x_2759) - (x_2738 * x_2752))), vec3<f32>(-(x_2748), (x_2741 * x_2752), (x_2741 * x_2759)));
+    let x_2725 : f32 = sin(x_1231);
+    let x_2727 : vec3<f32> = vec3<f32>(0.0, (-4.5 + x_2725), 0.0);
+    let x_2854 : vec3<f32> = (abs((x_2847 * (x_2649 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+    let x_2733 : f32 = ((length(max(x_2854, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_2854.x, max(x_2854.y, x_2854.z)), 0.0)) - 3.0);
+    let x_2884 : f32 = length(vec2<f32>(x_2649.x, x_2649.z));
+    let x_2893 : f32 = ((x_1231 - (3.141592741 * floor((x_1231 / 3.141592741)))) * 30.0);
+    let x_2926 : f32 = max((((x_2649 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_2884 * 0.333333343)) * sin((((x_2884 * 2.0) - x_2893) + (atan2(x_2649.z, x_2649.x) * 6.0)))) * 1.5), ((x_2884 * 0.5) - 4.0), clamp((x_2884 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1458 + vec3<f32>(0.001, 2.0, 0.0))) - 6.0));
+    let x_2653 : vec3<f32> = (x_1458 + vec3<f32>(-0.001, 0.0, 0.0));
+    let x_3136 : vec3<f32> = (abs((x_2847 * (x_2653 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+    let x_3015 : f32 = ((length(max(x_3136, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_3136.x, max(x_3136.y, x_3136.z)), 0.0)) - 3.0);
+    let x_3166 : f32 = length(vec2<f32>(x_2653.x, x_2653.z));
+    let x_3208 : f32 = max((((x_2653 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_3166 * 0.333333343)) * sin((((x_3166 * 2.0) - x_2893) + (atan2(x_2653.z, x_2653.x) * 6.0)))) * 1.5), ((x_3166 * 0.5) - 4.0), clamp((x_3166 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1458 + vec3<f32>(-0.001, 2.0, 0.0))) - 6.0));
+    let x_2658 : vec3<f32> = (x_1458 + vec3<f32>(0.0, 0.001, 0.0));
+    let x_3418 : vec3<f32> = (abs((x_2847 * (x_2658 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+    let x_3297 : f32 = ((length(max(x_3418, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_3418.x, max(x_3418.y, x_3418.z)), 0.0)) - 3.0);
+    let x_3448 : f32 = length(vec2<f32>(x_2658.x, x_2658.z));
+    let x_3490 : f32 = max((((x_2658 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_3448 * 0.333333343)) * sin((((x_3448 * 2.0) - x_2893) + (atan2(x_2658.z, x_2658.x) * 6.0)))) * 1.5), ((x_3448 * 0.5) - 4.0), clamp((x_3448 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1458 + vec3<f32>(0.0, 2.000999928, 0.0))) - 6.0));
+    let x_2662 : vec3<f32> = (x_1458 + vec3<f32>(0.0, -0.001, 0.0));
+    let x_3700 : vec3<f32> = (abs((x_2847 * (x_2662 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+    let x_3579 : f32 = ((length(max(x_3700, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_3700.x, max(x_3700.y, x_3700.z)), 0.0)) - 3.0);
+    let x_3730 : f32 = length(vec2<f32>(x_2662.x, x_2662.z));
+    let x_3772 : f32 = max((((x_2662 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_3730 * 0.333333343)) * sin((((x_3730 * 2.0) - x_2893) + (atan2(x_2662.z, x_2662.x) * 6.0)))) * 1.5), ((x_3730 * 0.5) - 4.0), clamp((x_3730 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1458 + vec3<f32>(0.0, 1.998999953, 0.0))) - 6.0));
+    let x_2667 : vec3<f32> = (x_1458 + vec3<f32>(0.0, 0.0, 0.001));
+    let x_3982 : vec3<f32> = (abs((x_2847 * (x_2667 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+    let x_3861 : f32 = ((length(max(x_3982, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_3982.x, max(x_3982.y, x_3982.z)), 0.0)) - 3.0);
+    let x_4012 : f32 = length(vec2<f32>(x_2667.x, x_2667.z));
+    let x_4054 : f32 = max((((x_2667 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_4012 * 0.333333343)) * sin((((x_4012 * 2.0) - x_2893) + (atan2(x_2667.z, x_2667.x) * 6.0)))) * 1.5), ((x_4012 * 0.5) - 4.0), clamp((x_4012 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1458 + vec3<f32>(0.0, 2.0, 0.001))) - 6.0));
+    let x_2671 : vec3<f32> = (x_1458 + vec3<f32>(0.0, 0.0, -0.001));
+    let x_4264 : vec3<f32> = (abs((x_2847 * (x_2671 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+    let x_4143 : f32 = ((length(max(x_4264, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_4264.x, max(x_4264.y, x_4264.z)), 0.0)) - 3.0);
+    let x_4294 : f32 = length(vec2<f32>(x_2671.x, x_2671.z));
+    let x_4336 : f32 = max((((x_2671 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_4294 * 0.333333343)) * sin((((x_4294 * 2.0) - x_2893) + (atan2(x_2671.z, x_2671.x) * 6.0)))) * 1.5), ((x_4294 * 0.5) - 4.0), clamp((x_4294 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1458 + vec3<f32>(0.0, 2.0, -0.001))) - 6.0));
+    let x_2676 : vec3<f32> = normalize(vec3<f32>(((select(x_2733, x_2926, (x_2926 < x_2733)) - 0.01) - (select(x_3015, x_3208, (x_3208 < x_3015)) - 0.01)), ((select(x_3297, x_3490, (x_3490 < x_3297)) - 0.01) - (select(x_3579, x_3772, (x_3772 < x_3579)) - 0.01)), ((select(x_3861, x_4054, (x_4054 < x_3861)) - 0.01) - (select(x_4143, x_4336, (x_4336 < x_4143)) - 0.01))));
+    x_15693_phi = x_13835;
+    x_15606_phi = x_13774;
+    x_15096_phi = 0.0;
+    x_14991_phi = vec4<f32>(0.0, 0.0, 0.0, 0.0);
+    x_14316_phi = x_13483;
+    x_14019_phi = x_1458;
+    x_14018_phi = x_2676;
+    x_13999_phi = x_1307;
+    x_13980_phi = x_13463;
+    if ((x_13463.y == -2.0)) {
+      var x_13665 : i32;
+      var x_4428 : vec2<f32>;
+      var x_13666_phi : f32;
+      var x_13665_phi : i32;
+      var x_13806_phi : i32;
+      var x_13745_phi : vec2<f32>;
+      var x_13727_phi : bool;
+      let x_1467 : vec3<f32> = reflect(x_1307, x_2676);
+      x_4375 = textureSample(x_907, x_909, x_1467);
+      x_1474 = (0.5 - (dot(x_1467, x_2676) * 0.600000024));
+      x_1477 = refract(x_1307, x_2676, 1.100000024);
+      let x_1481 : vec3<f32> = (x_1458 + (x_1477 * 0.5));
+      switch(0u) {
+        default: {
+          x_13666_phi = 0.0;
+          x_13665_phi = 0i;
+          loop {
+            var x_4936 : f32;
+            var x_4436 : i32;
+            var x_13679_phi : f32;
+            let x_13666 : f32 = x_13666_phi;
+            x_13665 = x_13665_phi;
+            x_13806_phi = x_13835;
+            x_13745_phi = x_13774;
+            x_13727_phi = false;
+            if ((x_13665 < 70i)) {
+            } else {
+              break;
+            }
+            if ((x_13666 > 300.0)) {
+              x_13806_phi = x_13665;
+              x_13745_phi = vec2<f32>(300.0, -1.0);
+              x_13727_phi = true;
+              break;
+            }
+            let x_4403 : vec3<f32> = (x_1481 + (x_1477 * x_13666));
+            let x_4829 : f32 = (sin((x_1231 * 1.136999965)) * 0.142857149);
+            let x_4835 : f32 = (sin(((x_1231 * 1.398000002) + 0.699999988)) * 0.125);
+            let x_4841 : f32 = (sin(((x_1231 * 0.873000026) + 0.300000012)) * 0.200000003);
+            let x_4845 : f32 = cos(x_4841);
+            let x_4848 : f32 = cos(x_4835);
+            let x_4852 : f32 = sin(x_4841);
+            let x_4855 : f32 = sin(x_4835);
+            let x_4866 : f32 = cos(x_4829);
+            let x_4870 : f32 = sin(x_4829);
+            let x_4897 : vec3<f32> = ((mat3x3<f32>(vec3<f32>((x_4845 * x_4848), x_4852, -(x_4855)), vec3<f32>(-(x_4852), (x_4845 * x_4866), -(x_4870)), vec3<f32>(x_4855, x_4870, (x_4866 * x_4848))) * (x_4403 * 1.299999952)) + vec3<f32>(-1.0, (-4.0 + x_2725), 0.0));
+            let x_4900 : f32 = x_4897.y;
+            let x_4964 : vec3<f32> = (abs((x_4897 + vec3<f32>(-(x_4900), 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.600000024));
+            let x_4911 : f32 = max(((length(max(x_4964, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_4964.x, max(x_4964.y, x_4964.z)), 0.0)) * 0.543928266), dot((x_4897 + vec3<f32>(0.5, 0.5, 0.0)), vec3<f32>(0.707106769, 0.707106769, 0.0)));
+            let x_4985 : vec3<f32> = (abs((x_4897 + vec3<f32>(x_4900, 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.699999988));
+            let x_4922 : f32 = dot((x_4897 + vec3<f32>(-0.5, 0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0));
+            let x_4925 : f32 = max(((length(max(x_4985, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_4985.x, max(x_4985.y, x_4985.z)), 0.0)) * 0.543928266), x_4922);
+            let x_4928 : bool = (x_4925 < x_4911);
+            x_13679_phi = 1.0;
+            if (x_4928) {
+              x_4936 = select(3.0, 2.0, (dot((x_4897 + vec3<f32>(0.5, -0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0)) > 0.0));
+              x_13679_phi = x_4936;
+            }
+            let x_13679 : f32 = x_13679_phi;
+            let x_15923 : f32 = select(x_4911, x_4925, x_4928);
+            let x_5006 : vec3<f32> = (abs((x_4897 + vec3<f32>((x_4900 - 3.0), -2.0, 0.0))) - vec3<f32>(1.0, 3.5, 0.699999988));
+            let x_4948 : f32 = max(((length(max(x_5006, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_5006.x, max(x_5006.y, x_5006.z)), 0.0)) * 0.543928266), x_4922);
+            let x_4951 : bool = (x_4948 < x_15923);
+            let x_15925 : f32 = select(x_15923, x_4948, x_4951);
+            let x_5171 : vec3<f32> = (abs((x_2847 * (x_4403 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+            let x_4794 : f32 = (3.0 - (length(max(x_5171, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_5171.x, max(x_5171.y, x_5171.z)), 0.0)));
+            let x_4797 : bool = (x_4794 < x_15925);
+            let x_15927 : f32 = select(x_15925, x_4794, x_4797);
+            if ((abs(x_15927) < 0.001)) {
+              x_4428 = vec2<f32>(x_13666, select(select(x_13679, 3.0, x_4951), -3.0, x_4797));
+              x_13806_phi = x_13665;
+              x_13745_phi = x_4428;
+              x_13727_phi = true;
+              break;
+            }
+
+            continuing {
+              x_4436 = bitcast<i32>((x_13665 + bitcast<i32>(1i)));
+              x_13666_phi = (x_13666 + x_15927);
+              x_13665_phi = x_4436;
+            }
+          }
+          x_13806 = x_13806_phi;
+          x_13745 = x_13745_phi;
+          let x_13727 : bool = x_13727_phi;
+          x_13805_phi = x_13806;
+          x_13744_phi = x_13745;
+          if (x_13727) {
+            break;
+          }
+          x_13805_phi = 70i;
+          x_13744_phi = vec2<f32>(300.0, -1.0);
+        }
+      }
+      x_13805 = x_13805_phi;
+      x_13744 = x_13744_phi;
+      x_1488 = (x_13483 + bitcast<i32>(x_13805));
+      x_1494 = (x_1481 + (x_1477 * x_13744.x));
+      let x_5477 : vec3<f32> = (x_1494 + vec3<f32>(0.001, 0.0, 0.0));
+      let x_5556 : f32 = (sin((x_1231 * 1.136999965)) * 0.142857149);
+      let x_5562 : f32 = (sin(((x_1231 * 1.398000002) + 0.699999988)) * 0.125);
+      let x_5568 : f32 = (sin(((x_1231 * 0.873000026) + 0.300000012)) * 0.200000003);
+      let x_5572 : f32 = cos(x_5568);
+      let x_5575 : f32 = cos(x_5562);
+      let x_5579 : f32 = sin(x_5568);
+      let x_5582 : f32 = sin(x_5562);
+      let x_5593 : f32 = cos(x_5556);
+      let x_5597 : f32 = sin(x_5556);
+      let x_5615 : mat3x3<f32> = mat3x3<f32>(vec3<f32>((x_5572 * x_5575), x_5579, -(x_5582)), vec3<f32>(-(x_5579), (x_5572 * x_5593), -(x_5597)), vec3<f32>(x_5582, x_5597, (x_5593 * x_5575)));
+      let x_5623 : vec3<f32> = vec3<f32>(-1.0, (-4.0 + x_2725), 0.0);
+      let x_5624 : vec3<f32> = ((x_5615 * (x_5477 * 1.299999952)) + x_5623);
+      let x_5627 : f32 = x_5624.y;
+      let x_5691 : vec3<f32> = (abs((x_5624 + vec3<f32>(-(x_5627), 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.600000024));
+      let x_5638 : f32 = max(((length(max(x_5691, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_5691.x, max(x_5691.y, x_5691.z)), 0.0)) * 0.543928266), dot((x_5624 + vec3<f32>(0.5, 0.5, 0.0)), vec3<f32>(0.707106769, 0.707106769, 0.0)));
+      let x_5712 : vec3<f32> = (abs((x_5624 + vec3<f32>(x_5627, 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.699999988));
+      let x_5649 : f32 = dot((x_5624 + vec3<f32>(-0.5, 0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0));
+      let x_5652 : f32 = max(((length(max(x_5712, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_5712.x, max(x_5712.y, x_5712.z)), 0.0)) * 0.543928266), x_5649);
+      let x_15928 : f32 = select(x_5638, x_5652, (x_5652 < x_5638));
+      let x_5733 : vec3<f32> = (abs((x_5624 + vec3<f32>((x_5627 - 3.0), -2.0, 0.0))) - vec3<f32>(1.0, 3.5, 0.699999988));
+      let x_5675 : f32 = max(((length(max(x_5733, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_5733.x, max(x_5733.y, x_5733.z)), 0.0)) * 0.543928266), x_5649);
+      let x_15929 : f32 = select(x_15928, x_5675, (x_5675 < x_15928));
+      let x_5898 : vec3<f32> = (abs((x_2847 * (x_5477 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_5521 : f32 = (3.0 - (length(max(x_5898, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_5898.x, max(x_5898.y, x_5898.z)), 0.0)));
+      let x_5481 : vec3<f32> = (x_1494 + vec3<f32>(-0.001, 0.0, 0.0));
+      let x_6032 : vec3<f32> = ((x_5615 * (x_5481 * 1.299999952)) + x_5623);
+      let x_6035 : f32 = x_6032.y;
+      let x_6099 : vec3<f32> = (abs((x_6032 + vec3<f32>(-(x_6035), 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.600000024));
+      let x_6046 : f32 = max(((length(max(x_6099, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6099.x, max(x_6099.y, x_6099.z)), 0.0)) * 0.543928266), dot((x_6032 + vec3<f32>(0.5, 0.5, 0.0)), vec3<f32>(0.707106769, 0.707106769, 0.0)));
+      let x_6120 : vec3<f32> = (abs((x_6032 + vec3<f32>(x_6035, 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.699999988));
+      let x_6057 : f32 = dot((x_6032 + vec3<f32>(-0.5, 0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0));
+      let x_6060 : f32 = max(((length(max(x_6120, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6120.x, max(x_6120.y, x_6120.z)), 0.0)) * 0.543928266), x_6057);
+      let x_15931 : f32 = select(x_6046, x_6060, (x_6060 < x_6046));
+      let x_6141 : vec3<f32> = (abs((x_6032 + vec3<f32>((x_6035 - 3.0), -2.0, 0.0))) - vec3<f32>(1.0, 3.5, 0.699999988));
+      let x_6083 : f32 = max(((length(max(x_6141, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6141.x, max(x_6141.y, x_6141.z)), 0.0)) * 0.543928266), x_6057);
+      let x_15932 : f32 = select(x_15931, x_6083, (x_6083 < x_15931));
+      let x_6306 : vec3<f32> = (abs((x_2847 * (x_5481 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_5929 : f32 = (3.0 - (length(max(x_6306, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6306.x, max(x_6306.y, x_6306.z)), 0.0)));
+      let x_5486 : vec3<f32> = (x_1494 + vec3<f32>(0.0, 0.001, 0.0));
+      let x_6440 : vec3<f32> = ((x_5615 * (x_5486 * 1.299999952)) + x_5623);
+      let x_6443 : f32 = x_6440.y;
+      let x_6507 : vec3<f32> = (abs((x_6440 + vec3<f32>(-(x_6443), 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.600000024));
+      let x_6454 : f32 = max(((length(max(x_6507, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6507.x, max(x_6507.y, x_6507.z)), 0.0)) * 0.543928266), dot((x_6440 + vec3<f32>(0.5, 0.5, 0.0)), vec3<f32>(0.707106769, 0.707106769, 0.0)));
+      let x_6528 : vec3<f32> = (abs((x_6440 + vec3<f32>(x_6443, 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.699999988));
+      let x_6465 : f32 = dot((x_6440 + vec3<f32>(-0.5, 0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0));
+      let x_6468 : f32 = max(((length(max(x_6528, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6528.x, max(x_6528.y, x_6528.z)), 0.0)) * 0.543928266), x_6465);
+      let x_15934 : f32 = select(x_6454, x_6468, (x_6468 < x_6454));
+      let x_6549 : vec3<f32> = (abs((x_6440 + vec3<f32>((x_6443 - 3.0), -2.0, 0.0))) - vec3<f32>(1.0, 3.5, 0.699999988));
+      let x_6491 : f32 = max(((length(max(x_6549, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6549.x, max(x_6549.y, x_6549.z)), 0.0)) * 0.543928266), x_6465);
+      let x_15935 : f32 = select(x_15934, x_6491, (x_6491 < x_15934));
+      let x_6714 : vec3<f32> = (abs((x_2847 * (x_5486 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_6337 : f32 = (3.0 - (length(max(x_6714, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6714.x, max(x_6714.y, x_6714.z)), 0.0)));
+      let x_5490 : vec3<f32> = (x_1494 + vec3<f32>(0.0, -0.001, 0.0));
+      let x_6848 : vec3<f32> = ((x_5615 * (x_5490 * 1.299999952)) + x_5623);
+      let x_6851 : f32 = x_6848.y;
+      let x_6915 : vec3<f32> = (abs((x_6848 + vec3<f32>(-(x_6851), 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.600000024));
+      let x_6862 : f32 = max(((length(max(x_6915, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6915.x, max(x_6915.y, x_6915.z)), 0.0)) * 0.543928266), dot((x_6848 + vec3<f32>(0.5, 0.5, 0.0)), vec3<f32>(0.707106769, 0.707106769, 0.0)));
+      let x_6936 : vec3<f32> = (abs((x_6848 + vec3<f32>(x_6851, 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.699999988));
+      let x_6873 : f32 = dot((x_6848 + vec3<f32>(-0.5, 0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0));
+      let x_6876 : f32 = max(((length(max(x_6936, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6936.x, max(x_6936.y, x_6936.z)), 0.0)) * 0.543928266), x_6873);
+      let x_15937 : f32 = select(x_6862, x_6876, (x_6876 < x_6862));
+      let x_6957 : vec3<f32> = (abs((x_6848 + vec3<f32>((x_6851 - 3.0), -2.0, 0.0))) - vec3<f32>(1.0, 3.5, 0.699999988));
+      let x_6899 : f32 = max(((length(max(x_6957, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_6957.x, max(x_6957.y, x_6957.z)), 0.0)) * 0.543928266), x_6873);
+      let x_15938 : f32 = select(x_15937, x_6899, (x_6899 < x_15937));
+      let x_7122 : vec3<f32> = (abs((x_2847 * (x_5490 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_6745 : f32 = (3.0 - (length(max(x_7122, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_7122.x, max(x_7122.y, x_7122.z)), 0.0)));
+      let x_5495 : vec3<f32> = (x_1494 + vec3<f32>(0.0, 0.0, 0.001));
+      let x_7256 : vec3<f32> = ((x_5615 * (x_5495 * 1.299999952)) + x_5623);
+      let x_7259 : f32 = x_7256.y;
+      let x_7323 : vec3<f32> = (abs((x_7256 + vec3<f32>(-(x_7259), 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.600000024));
+      let x_7270 : f32 = max(((length(max(x_7323, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_7323.x, max(x_7323.y, x_7323.z)), 0.0)) * 0.543928266), dot((x_7256 + vec3<f32>(0.5, 0.5, 0.0)), vec3<f32>(0.707106769, 0.707106769, 0.0)));
+      let x_7344 : vec3<f32> = (abs((x_7256 + vec3<f32>(x_7259, 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.699999988));
+      let x_7281 : f32 = dot((x_7256 + vec3<f32>(-0.5, 0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0));
+      let x_7284 : f32 = max(((length(max(x_7344, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_7344.x, max(x_7344.y, x_7344.z)), 0.0)) * 0.543928266), x_7281);
+      let x_15940 : f32 = select(x_7270, x_7284, (x_7284 < x_7270));
+      let x_7365 : vec3<f32> = (abs((x_7256 + vec3<f32>((x_7259 - 3.0), -2.0, 0.0))) - vec3<f32>(1.0, 3.5, 0.699999988));
+      let x_7307 : f32 = max(((length(max(x_7365, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_7365.x, max(x_7365.y, x_7365.z)), 0.0)) * 0.543928266), x_7281);
+      let x_15941 : f32 = select(x_15940, x_7307, (x_7307 < x_15940));
+      let x_7530 : vec3<f32> = (abs((x_2847 * (x_5495 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_7153 : f32 = (3.0 - (length(max(x_7530, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_7530.x, max(x_7530.y, x_7530.z)), 0.0)));
+      let x_5499 : vec3<f32> = (x_1494 + vec3<f32>(0.0, 0.0, -0.001));
+      let x_7664 : vec3<f32> = ((x_5615 * (x_5499 * 1.299999952)) + x_5623);
+      let x_7667 : f32 = x_7664.y;
+      let x_7731 : vec3<f32> = (abs((x_7664 + vec3<f32>(-(x_7667), 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.600000024));
+      let x_7678 : f32 = max(((length(max(x_7731, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_7731.x, max(x_7731.y, x_7731.z)), 0.0)) * 0.543928266), dot((x_7664 + vec3<f32>(0.5, 0.5, 0.0)), vec3<f32>(0.707106769, 0.707106769, 0.0)));
+      let x_7752 : vec3<f32> = (abs((x_7664 + vec3<f32>(x_7667, 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.699999988));
+      let x_7689 : f32 = dot((x_7664 + vec3<f32>(-0.5, 0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0));
+      let x_7692 : f32 = max(((length(max(x_7752, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_7752.x, max(x_7752.y, x_7752.z)), 0.0)) * 0.543928266), x_7689);
+      let x_15943 : f32 = select(x_7678, x_7692, (x_7692 < x_7678));
+      let x_7773 : vec3<f32> = (abs((x_7664 + vec3<f32>((x_7667 - 3.0), -2.0, 0.0))) - vec3<f32>(1.0, 3.5, 0.699999988));
+      let x_7715 : f32 = max(((length(max(x_7773, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_7773.x, max(x_7773.y, x_7773.z)), 0.0)) * 0.543928266), x_7689);
+      let x_15944 : f32 = select(x_15943, x_7715, (x_7715 < x_15943));
+      let x_7938 : vec3<f32> = (abs((x_2847 * (x_5499 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_7561 : f32 = (3.0 - (length(max(x_7938, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_7938.x, max(x_7938.y, x_7938.z)), 0.0)));
+      x_5504 = normalize(vec3<f32>((select(x_15929, x_5521, (x_5521 < x_15929)) - select(x_15932, x_5929, (x_5929 < x_15932))), (select(x_15935, x_6337, (x_6337 < x_15935)) - select(x_15938, x_6745, (x_6745 < x_15938))), (select(x_15941, x_7153, (x_7153 < x_15941)) - select(x_15944, x_7561, (x_7561 < x_15944)))));
+      x_15693_phi = x_13805;
+      x_15606_phi = x_13744;
+      x_15096_phi = x_1474;
+      x_14991_phi = x_4375;
+      x_14316_phi = x_1488;
+      x_14019_phi = x_1494;
+      x_14018_phi = x_5504;
+      x_13999_phi = x_1477;
+      x_13980_phi = x_13744;
+    }
+    var x_14216 : i32;
+    var x_14118 : vec2<f32>;
+    var x_14215_phi : i32;
+    var x_14117_phi : vec2<f32>;
+    let x_15693 : i32 = x_15693_phi;
+    let x_15606 : vec2<f32> = x_15606_phi;
+    let x_15096 : f32 = x_15096_phi;
+    let x_14991 : vec4<f32> = x_14991_phi;
+    let x_14316 : i32 = x_14316_phi;
+    let x_14019 : vec3<f32> = x_14019_phi;
+    let x_14018 : vec3<f32> = x_14018_phi;
+    let x_13999 : vec3<f32> = x_13999_phi;
+    let x_13980 : vec2<f32> = x_13980_phi;
+    x_15829_phi = x_14246;
+    x_15779_phi = x_14148;
+    x_14939_phi = x_14316;
+    x_14895_phi = x_13980;
+    x_14875_phi = x_14018;
+    x_14831_phi = x_13999;
+    x_14440_phi = x_14019;
+    if ((x_13980.y == -3.0)) {
+      var x_1514 : vec3<f32>;
+      var x_14038 : i32;
+      var x_8005 : vec2<f32>;
+      var x_14039_phi : f32;
+      var x_14038_phi : i32;
+      var x_14216_phi : i32;
+      var x_14118_phi : vec2<f32>;
+      var x_14100_phi : bool;
+      x_1504 = refract(x_13999, x_14018, 0.909090936);
+      let x_1508 : vec3<f32> = (x_14019 + (x_1504 * 1.0));
+      x_1514 = (x_1508 + (x_1504 * x_13980.x));
+      switch(0u) {
+        default: {
+          x_14039_phi = 0.0;
+          x_14038_phi = 0i;
+          loop {
+            var x_9018 : bool;
+            var x_9031 : f32;
+            var x_8013 : i32;
+            var x_9020_phi : bool;
+            var x_14040_phi : f32;
+            let x_14039 : f32 = x_14039_phi;
+            x_14038 = x_14038_phi;
+            x_14216_phi = x_14246;
+            x_14118_phi = x_14148;
+            x_14100_phi = false;
+            if ((x_14038 < 70i)) {
+            } else {
+              break;
+            }
+            if ((x_14039 > 300.0)) {
+              x_14216_phi = x_14038;
+              x_14118_phi = vec2<f32>(300.0, -1.0);
+              x_14100_phi = true;
+              break;
+            }
+            let x_7980 : vec3<f32> = (x_1514 + (x_1504 * x_14039));
+            let x_8940 : vec3<f32> = (abs((x_2847 * (x_7980 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+            let x_8819 : f32 = ((length(max(x_8940, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_8940.x, max(x_8940.y, x_8940.z)), 0.0)) - 3.0);
+            let x_8970 : f32 = length(vec2<f32>(x_7980.x, x_7980.z));
+            let x_9012 : f32 = max((((x_7980 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_8970 * 0.333333343)) * sin((((x_8970 * 2.0) - x_2893) + (atan2(x_7980.z, x_7980.x) * 6.0)))) * 1.5), ((x_8970 * 0.5) - 4.0), clamp((x_8970 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_7980 + vec3<f32>(0.0, 2.0, 0.0))) - 6.0));
+            let x_9014 : bool = (x_8970 < 5.599999905);
+            x_9020_phi = x_9014;
+            if (x_9014) {
+              x_9018 = (x_7980.y > -7.0);
+              x_9020_phi = x_9018;
+            }
+            var x_9028 : bool;
+            var x_9030_phi : bool;
+            let x_9020 : bool = x_9020_phi;
+            if (x_9020) {
+              let x_9023 : f32 = x_7980.y;
+              let x_9024 : bool = (x_9023 > -2.359999895);
+              x_9030_phi = x_9024;
+              if (x_9024) {
+                x_9028 = (x_9023 < -2.099999905);
+                x_9030_phi = x_9028;
+              }
+              let x_9030 : bool = x_9030_phi;
+              x_9031 = select(6.0, 5.0, x_9030);
+              x_14040_phi = x_9031;
+            } else {
+              x_14040_phi = 4.0;
+            }
+            let x_14040 : f32 = x_14040_phi;
+            let x_8779 : bool = (x_9012 < x_8819);
+            let x_8787 : f32 = (select(x_8819, x_9012, x_8779) - 0.01);
+            if ((abs(x_8787) < 0.001)) {
+              x_8005 = vec2<f32>(x_14039, select(-2.0, x_14040, x_8779));
+              x_14216_phi = x_14038;
+              x_14118_phi = x_8005;
+              x_14100_phi = true;
+              break;
+            }
+
+            continuing {
+              x_8013 = bitcast<i32>((x_14038 + bitcast<i32>(1i)));
+              x_14039_phi = (x_14039 + x_8787);
+              x_14038_phi = x_8013;
+            }
+          }
+          x_14216 = x_14216_phi;
+          x_14118 = x_14118_phi;
+          let x_14100 : bool = x_14100_phi;
+          x_14215_phi = x_14216;
+          x_14117_phi = x_14118;
+          if (x_14100) {
+            break;
+          }
+          x_14215_phi = 70i;
+          x_14117_phi = vec2<f32>(300.0, -1.0);
+        }
+      }
+      x_14215 = x_14215_phi;
+      x_14117 = x_14117_phi;
+      x_1520 = (x_14316 + bitcast<i32>(x_14215));
+      x_1526 = (x_1508 + (x_1504 * x_14117.x));
+      let x_9054 : vec3<f32> = (x_1526 + vec3<f32>(0.001, 0.0, 0.0));
+      let x_9259 : vec3<f32> = (abs((x_2847 * (x_9054 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_9138 : f32 = ((length(max(x_9259, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_9259.x, max(x_9259.y, x_9259.z)), 0.0)) - 3.0);
+      let x_9289 : f32 = length(vec2<f32>(x_9054.x, x_9054.z));
+      let x_9331 : f32 = max((((x_9054 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_9289 * 0.333333343)) * sin((((x_9289 * 2.0) - x_2893) + (atan2(x_9054.z, x_9054.x) * 6.0)))) * 1.5), ((x_9289 * 0.5) - 4.0), clamp((x_9289 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1526 + vec3<f32>(0.001, 2.0, 0.0))) - 6.0));
+      let x_9058 : vec3<f32> = (x_1526 + vec3<f32>(-0.001, 0.0, 0.0));
+      let x_9541 : vec3<f32> = (abs((x_2847 * (x_9058 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_9420 : f32 = ((length(max(x_9541, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_9541.x, max(x_9541.y, x_9541.z)), 0.0)) - 3.0);
+      let x_9571 : f32 = length(vec2<f32>(x_9058.x, x_9058.z));
+      let x_9613 : f32 = max((((x_9058 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_9571 * 0.333333343)) * sin((((x_9571 * 2.0) - x_2893) + (atan2(x_9058.z, x_9058.x) * 6.0)))) * 1.5), ((x_9571 * 0.5) - 4.0), clamp((x_9571 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1526 + vec3<f32>(-0.001, 2.0, 0.0))) - 6.0));
+      let x_9063 : vec3<f32> = (x_1526 + vec3<f32>(0.0, 0.001, 0.0));
+      let x_9823 : vec3<f32> = (abs((x_2847 * (x_9063 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_9702 : f32 = ((length(max(x_9823, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_9823.x, max(x_9823.y, x_9823.z)), 0.0)) - 3.0);
+      let x_9853 : f32 = length(vec2<f32>(x_9063.x, x_9063.z));
+      let x_9895 : f32 = max((((x_9063 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_9853 * 0.333333343)) * sin((((x_9853 * 2.0) - x_2893) + (atan2(x_9063.z, x_9063.x) * 6.0)))) * 1.5), ((x_9853 * 0.5) - 4.0), clamp((x_9853 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1526 + vec3<f32>(0.0, 2.000999928, 0.0))) - 6.0));
+      let x_9067 : vec3<f32> = (x_1526 + vec3<f32>(0.0, -0.001, 0.0));
+      let x_10105 : vec3<f32> = (abs((x_2847 * (x_9067 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_9984 : f32 = ((length(max(x_10105, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_10105.x, max(x_10105.y, x_10105.z)), 0.0)) - 3.0);
+      let x_10135 : f32 = length(vec2<f32>(x_9067.x, x_9067.z));
+      let x_10177 : f32 = max((((x_9067 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_10135 * 0.333333343)) * sin((((x_10135 * 2.0) - x_2893) + (atan2(x_9067.z, x_9067.x) * 6.0)))) * 1.5), ((x_10135 * 0.5) - 4.0), clamp((x_10135 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1526 + vec3<f32>(0.0, 1.998999953, 0.0))) - 6.0));
+      let x_9072 : vec3<f32> = (x_1526 + vec3<f32>(0.0, 0.0, 0.001));
+      let x_10387 : vec3<f32> = (abs((x_2847 * (x_9072 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_10266 : f32 = ((length(max(x_10387, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_10387.x, max(x_10387.y, x_10387.z)), 0.0)) - 3.0);
+      let x_10417 : f32 = length(vec2<f32>(x_9072.x, x_9072.z));
+      let x_10459 : f32 = max((((x_9072 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_10417 * 0.333333343)) * sin((((x_10417 * 2.0) - x_2893) + (atan2(x_9072.z, x_9072.x) * 6.0)))) * 1.5), ((x_10417 * 0.5) - 4.0), clamp((x_10417 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1526 + vec3<f32>(0.0, 2.0, 0.001))) - 6.0));
+      let x_9076 : vec3<f32> = (x_1526 + vec3<f32>(0.0, 0.0, -0.001));
+      let x_10669 : vec3<f32> = (abs((x_2847 * (x_9076 + x_2727))) - vec3<f32>(1.0, 1.0, 1.0));
+      let x_10548 : f32 = ((length(max(x_10669, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_10669.x, max(x_10669.y, x_10669.z)), 0.0)) - 3.0);
+      let x_10699 : f32 = length(vec2<f32>(x_9076.x, x_9076.z));
+      let x_10741 : f32 = max((((x_9076 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_10699 * 0.333333343)) * sin((((x_10699 * 2.0) - x_2893) + (atan2(x_9076.z, x_9076.x) * 6.0)))) * 1.5), ((x_10699 * 0.5) - 4.0), clamp((x_10699 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_1526 + vec3<f32>(0.0, 2.0, -0.001))) - 6.0));
+      x_9081 = normalize(vec3<f32>(((select(x_9138, x_9331, (x_9331 < x_9138)) - 0.01) - (select(x_9420, x_9613, (x_9613 < x_9420)) - 0.01)), ((select(x_9702, x_9895, (x_9895 < x_9702)) - 0.01) - (select(x_9984, x_10177, (x_10177 < x_9984)) - 0.01)), ((select(x_10266, x_10459, (x_10459 < x_10266)) - 0.01) - (select(x_10548, x_10741, (x_10741 < x_10548)) - 0.01))));
+      x_15829_phi = x_14215;
+      x_15779_phi = x_14117;
+      x_14939_phi = x_1520;
+      x_14895_phi = x_14117;
+      x_14875_phi = x_9081;
+      x_14831_phi = x_1504;
+      x_14440_phi = x_1526;
+    }
+    var x_10786 : vec3<f32>;
+    var x_14465 : i32;
+    var x_10852 : vec2<f32>;
+    var x_14466_phi : f32;
+    var x_14465_phi : i32;
+    var x_14686_phi : i32;
+    var x_14545_phi : vec2<f32>;
+    var x_14527_phi : bool;
+    let x_15829 : i32 = x_15829_phi;
+    let x_15779 : vec2<f32> = x_15779_phi;
+    let x_14939 : i32 = x_14939_phi;
+    let x_14895 : vec2<f32> = x_14895_phi;
+    let x_14875 : vec3<f32> = x_14875_phi;
+    let x_14831 : vec3<f32> = x_14831_phi;
+    let x_14440 : vec3<f32> = x_14440_phi;
+    x_10786 = (x_14440 + vec3<f32>(-0.009733285, 0.024333213, -0.014599928));
+    switch(0u) {
+      default: {
+        x_14466_phi = 0.0;
+        x_14465_phi = 0i;
+        loop {
+          var x_10860 : i32;
+          let x_14466 : f32 = x_14466_phi;
+          x_14465 = x_14465_phi;
+          x_14686_phi = x_14717;
+          x_14545_phi = x_14576;
+          x_14527_phi = false;
+          if ((x_14465 < 70i)) {
+          } else {
+            break;
+          }
+          if ((x_14466 > 300.0)) {
+            x_14686_phi = x_14465;
+            x_14545_phi = vec2<f32>(300.0, -1.0);
+            x_14527_phi = true;
+            break;
+          }
+          let x_10827 : vec3<f32> = (x_10786 + (vec3<f32>(-0.324442834, 0.811107099, -0.486664265) * x_14466));
+          let x_10920 : f32 = (sin((x_1231 * 1.136999965)) * 0.142857149);
+          let x_10926 : f32 = (sin(((x_1231 * 1.398000002) + 0.699999988)) * 0.125);
+          let x_10932 : f32 = (sin(((x_1231 * 0.873000026) + 0.300000012)) * 0.200000003);
+          let x_10936 : f32 = cos(x_10932);
+          let x_10939 : f32 = cos(x_10926);
+          let x_10943 : f32 = sin(x_10932);
+          let x_10946 : f32 = sin(x_10926);
+          let x_10957 : f32 = cos(x_10920);
+          let x_10961 : f32 = sin(x_10920);
+          let x_10988 : vec3<f32> = ((mat3x3<f32>(vec3<f32>((x_10936 * x_10939), x_10943, -(x_10946)), vec3<f32>(-(x_10943), (x_10936 * x_10957), -(x_10961)), vec3<f32>(x_10946, x_10961, (x_10957 * x_10939))) * (x_10827 * 1.299999952)) + vec3<f32>(-1.0, (-4.0 + x_2725), 0.0));
+          let x_10991 : f32 = x_10988.y;
+          let x_11055 : vec3<f32> = (abs((x_10988 + vec3<f32>(-(x_10991), 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.600000024));
+          let x_11002 : f32 = max(((length(max(x_11055, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_11055.x, max(x_11055.y, x_11055.z)), 0.0)) * 0.543928266), dot((x_10988 + vec3<f32>(0.5, 0.5, 0.0)), vec3<f32>(0.707106769, 0.707106769, 0.0)));
+          let x_11076 : vec3<f32> = (abs((x_10988 + vec3<f32>(x_10991, 0.0, 0.0))) - vec3<f32>(1.0, 2.0, 0.699999988));
+          let x_11013 : f32 = dot((x_10988 + vec3<f32>(-0.5, 0.5, 0.0)), vec3<f32>(0.707106769, -0.707106769, 0.0));
+          let x_11016 : f32 = max(((length(max(x_11076, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_11076.x, max(x_11076.y, x_11076.z)), 0.0)) * 0.543928266), x_11013);
+          let x_15954 : f32 = select(x_11002, x_11016, (x_11016 < x_11002));
+          let x_11097 : vec3<f32> = (abs((x_10988 + vec3<f32>((x_10991 - 3.0), -2.0, 0.0))) - vec3<f32>(1.0, 3.5, 0.699999988));
+          let x_11039 : f32 = max(((length(max(x_11097, vec3<f32>(0.0, 0.0, 0.0))) + min(max(x_11097.x, max(x_11097.y, x_11097.z)), 0.0)) * 0.543928266), x_11013);
+          let x_15956 : f32 = select(x_15954, x_11039, (x_11039 < x_15954));
+          let x_11127 : f32 = length(vec2<f32>(x_10827.x, x_10827.z));
+          let x_11169 : f32 = max((((x_10827 + vec3<f32>(0.0, (3.0 + mix(((min(0.5, (x_11127 * 0.333333343)) * sin((((x_11127 * 2.0) - x_2893) + (atan2(x_10827.z, x_10827.x) * 6.0)))) * 1.5), ((x_11127 * 0.5) - 4.0), clamp((x_11127 - 4.599999905), 0.0, 1.0))), 0.0))).y * 0.5), (length((x_10827 + vec3<f32>(0.0, 2.0, 0.0))) - 6.0));
+          let x_15957 : f32 = select(x_15956, x_11169, (x_11169 < x_15956));
+          if ((abs(x_15957) < 0.001)) {
+            x_10852 = vec2<f32>(x_14466, 0.0);
+            x_14686_phi = x_14465;
+            x_14545_phi = x_10852;
+            x_14527_phi = true;
+            break;
+          }
+
+          continuing {
+            x_10860 = bitcast<i32>((x_14465 + bitcast<i32>(1i)));
+            x_14466_phi = (x_14466 + x_15957);
+            x_14465_phi = x_10860;
+          }
+        }
+        x_14686 = x_14686_phi;
+        x_14545 = x_14545_phi;
+        let x_14527 : bool = x_14527_phi;
+        x_14685_phi = x_14686;
+        x_14544_phi = x_14545;
+        if (x_14527) {
+          break;
+        }
+        x_14685_phi = 70i;
+        x_14544_phi = vec2<f32>(300.0, -1.0);
+      }
+    }
+    var x_14685 : i32;
+    var x_14544 : vec2<f32>;
+    var x_1538 : f32;
+    var x_14980 : vec4<f32>;
+    var x_14979_phi : vec4<f32>;
+    x_14685 = x_14685_phi;
+    x_14544 = x_14544_phi;
+    x_1538 = x_14895.y;
+    if ((x_14895.x >= 300.0)) {
+      x_11945 = textureSample(x_907, x_909, x_14831);
+      x_14984_phi = x_11945;
+    } else {
+      var x_14981 : vec4<f32>;
+      var x_14980_phi : vec4<f32>;
+      let x_11958 : vec4<f32> = textureSample(x_907, x_909, reflect(x_14831, x_14875));
+      if ((x_1538 < 1.5)) {
+        x_14979_phi = vec4<f32>(0.0, 0.340000004, 0.610000014, 0.5);
+      } else {
+        var x_14982 : vec4<f32>;
+        var x_14981_phi : vec4<f32>;
+        if ((x_1538 < 2.5)) {
+          x_14980_phi = vec4<f32>(0.159999996, 0.709999979, 0.959999979, 0.5);
+        } else {
+          var x_15961 : vec4<f32>;
+          var x_14982_phi : vec4<f32>;
+          if ((x_1538 < 3.5)) {
+            x_14981_phi = vec4<f32>(0.330000013, 0.769999981, 0.970000029, 0.5);
+          } else {
+            if ((x_1538 < 4.5)) {
+              x_14982_phi = vec4<f32>(0.159999996, 0.709999979, 0.959999979, 0.5);
+            } else {
+              let x_11976 : bool = (x_1538 < 5.5);
+              x_15961 = select(vec4<f32>(0.100000001, 0.100000001, 0.100000001, 1.299999952), vec4<f32>(0.100000001, 0.100000001, 0.100000001, 0.0), vec4<bool>(x_11976, x_11976, x_11976, x_11976));
+              x_14982_phi = x_15961;
+            }
+            x_14982 = x_14982_phi;
+            x_14981_phi = x_14982;
+          }
+          x_14981 = x_14981_phi;
+          x_14980_phi = x_14981;
+        }
+        x_14980 = x_14980_phi;
+        x_14979_phi = x_14980;
+      }
+      let x_14979 : vec4<f32> = x_14979_phi;
+      let x_11987 : vec3<f32> = (vec3<f32>(x_14979.x, x_14979.y, x_14979.z) * select((1.600000024 - (f32(x_14685) * 0.014285714)), 0.600000024, (x_14544.x < 300.0)));
+      let x_12000 : f32 = ((dot(-(x_14831), x_14875) - 1.0) + x_14979.w);
+      x_12002 = mix(vec4<f32>(x_11987.x, x_11987.y, x_11987.z, 1.0), x_11958, vec4<f32>(x_12000, x_12000, x_12000, x_12000));
+      x_14984_phi = x_12002;
+    }
+    let x_14984 : vec4<f32> = x_14984_phi;
+    let x_11930 : f32 = ((sin((x_1231 * 0.333333343)) * 0.5) + 0.5);
+    let x_11936 : f32 = (f32(x_14939) * 0.015714286);
+    let x_1321 : vec4<f32> = x_1317;
+    x_1317 = (x_1321 + (mix(mix(x_14984, mix(vec4<f32>(0.860000014, 0.980000019, 1.0, 1.0), vec4<f32>(1.659999967, 0.980000019, 0.5, 1.0), vec4<f32>(x_11930, x_11930, x_11930, x_11930)), vec4<f32>(x_11936, x_11936, x_11936, x_11936)), x_14991, vec4<f32>(x_15096, x_15096, x_15096, x_15096)) * vec4<f32>(0.25, 0.25, 0.25, 0.25)));
 
     continuing {
-      let x_1323 : i32 = i_1;
-      i_1 = (x_1323 + 1i);
+      x_1324 = (x_13383 + 1i);
+      x_14717_phi = x_14685;
+      x_14576_phi = x_14544;
+      x_14246_phi = x_15829;
+      x_14148_phi = x_15779;
+      x_13835_phi = x_15693;
+      x_13774_phi = x_15606;
+      x_13486_phi = x_13483;
+      x_13466_phi = x_13463;
+      x_13383_phi = x_1324;
     }
   }
   return;
@@ -902,12 +791,12 @@ fn main_1() {
 
 struct main_out {
   @location(0)
-  frag_color_1 : vec4<f32>,
+  x_1317_1 : vec4<f32>,
 }
 
 @stage(fragment)
-fn main(@location(0) v_screen_position_param : vec2<f32>) -> main_out {
-  v_screen_position = v_screen_position_param;
+fn main(@location(0) x_1264_param : vec2<f32>) -> main_out {
+  x_1264 = x_1264_param;
   main_1();
-  return main_out(frag_color);
+  return main_out(x_1317);
 }

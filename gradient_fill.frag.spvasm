@@ -6,88 +6,55 @@
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Fragment %main "main" %interpolated_vertices %frag_color
-               OpExecutionMode %main OriginUpperLeft
-               OpSource GLSL 460
-               OpSourceExtension "GL_GOOGLE_cpp_style_line_directive"
-               OpSourceExtension "GL_GOOGLE_include_directive"
-               OpName %main "main"
-               OpName %len "len"
-               OpName %GradientInfo "GradientInfo"
-               OpMemberName %GradientInfo 0 "start_point"
-               OpMemberName %GradientInfo 1 "end_point"
-               OpMemberName %GradientInfo 2 "start_color"
-               OpMemberName %GradientInfo 3 "end_color"
-               OpName %gradient_info "gradient_info"
-               OpName %dot_v "dot_v"
-               OpName %interpolated_vertices "interpolated_vertices"
-               OpName %interp "interp"
-               OpName %frag_color "frag_color"
-               OpMemberDecorate %GradientInfo 0 Offset 0
-               OpMemberDecorate %GradientInfo 1 Offset 8
-               OpMemberDecorate %GradientInfo 2 Offset 16
-               OpMemberDecorate %GradientInfo 3 Offset 32
-               OpDecorate %GradientInfo Block
-               OpDecorate %gradient_info DescriptorSet 0
-               OpDecorate %gradient_info Binding 0
-               OpDecorate %interpolated_vertices Location 0
-               OpDecorate %frag_color Location 0
+               OpEntryPoint Fragment %4 "main" %26 %44
+               OpExecutionMode %4 OriginUpperLeft
+               OpMemberDecorate %_struct_11 0 Offset 0
+               OpMemberDecorate %_struct_11 1 Offset 8
+               OpMemberDecorate %_struct_11 2 Offset 16
+               OpMemberDecorate %_struct_11 3 Offset 32
+               OpDecorate %_struct_11 Block
+               OpDecorate %13 DescriptorSet 0
+               OpDecorate %13 Binding 0
+               OpDecorate %26 Location 0
+               OpDecorate %44 Location 0
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
-%_ptr_Function_float = OpTypePointer Function %float
     %v2float = OpTypeVector %float 2
     %v4float = OpTypeVector %float 4
-%GradientInfo = OpTypeStruct %v2float %v2float %v4float %v4float
-%_ptr_Uniform_GradientInfo = OpTypePointer Uniform %GradientInfo
-%gradient_info = OpVariable %_ptr_Uniform_GradientInfo Uniform
+ %_struct_11 = OpTypeStruct %v2float %v2float %v4float %v4float
+%_ptr_Uniform__struct_11 = OpTypePointer Uniform %_struct_11
+         %13 = OpVariable %_ptr_Uniform__struct_11 Uniform
         %int = OpTypeInt 32 1
       %int_1 = OpConstant %int 1
 %_ptr_Uniform_v2float = OpTypePointer Uniform %v2float
       %int_0 = OpConstant %int 0
 %_ptr_Input_v2float = OpTypePointer Input %v2float
-%interpolated_vertices = OpVariable %_ptr_Input_v2float Input
+         %26 = OpVariable %_ptr_Input_v2float Input
 %_ptr_Output_v4float = OpTypePointer Output %v4float
- %frag_color = OpVariable %_ptr_Output_v4float Output
+         %44 = OpVariable %_ptr_Output_v4float Output
       %int_2 = OpConstant %int 2
 %_ptr_Uniform_v4float = OpTypePointer Uniform %v4float
       %int_3 = OpConstant %int 3
-       %main = OpFunction %void None %3
+          %4 = OpFunction %void None %3
           %5 = OpLabel
-        %len = OpVariable %_ptr_Function_float Function
-      %dot_v = OpVariable %_ptr_Function_float Function
-     %interp = OpVariable %_ptr_Function_float Function
-         %17 = OpAccessChain %_ptr_Uniform_v2float %gradient_info %int_1
+         %17 = OpAccessChain %_ptr_Uniform_v2float %13 %int_1
          %18 = OpLoad %v2float %17
-         %20 = OpAccessChain %_ptr_Uniform_v2float %gradient_info %int_0
+         %20 = OpAccessChain %_ptr_Uniform_v2float %13 %int_0
          %21 = OpLoad %v2float %20
          %22 = OpFSub %v2float %18 %21
          %23 = OpExtInst %float %1 Length %22
-               OpStore %len %23
-         %27 = OpLoad %v2float %interpolated_vertices
-         %28 = OpAccessChain %_ptr_Uniform_v2float %gradient_info %int_0
-         %29 = OpLoad %v2float %28
-         %30 = OpFSub %v2float %27 %29
-         %31 = OpAccessChain %_ptr_Uniform_v2float %gradient_info %int_1
-         %32 = OpLoad %v2float %31
-         %33 = OpAccessChain %_ptr_Uniform_v2float %gradient_info %int_0
-         %34 = OpLoad %v2float %33
-         %35 = OpFSub %v2float %32 %34
-         %36 = OpDot %float %30 %35
-               OpStore %dot_v %36
-         %38 = OpLoad %float %dot_v
-         %39 = OpLoad %float %len
-         %40 = OpLoad %float %len
-         %41 = OpFMul %float %39 %40
-         %42 = OpFDiv %float %38 %41
-               OpStore %interp %42
-         %47 = OpAccessChain %_ptr_Uniform_v4float %gradient_info %int_2
+         %27 = OpLoad %v2float %26
+         %30 = OpFSub %v2float %27 %21
+         %36 = OpDot %float %30 %22
+         %41 = OpFMul %float %23 %23
+         %42 = OpFDiv %float %36 %41
+         %47 = OpAccessChain %_ptr_Uniform_v4float %13 %int_2
          %48 = OpLoad %v4float %47
-         %50 = OpAccessChain %_ptr_Uniform_v4float %gradient_info %int_3
+         %50 = OpAccessChain %_ptr_Uniform_v4float %13 %int_3
          %51 = OpLoad %v4float %50
-         %52 = OpLoad %float %interp
-         %53 = OpCompositeConstruct %v4float %52 %52 %52 %52
+         %53 = OpCompositeConstruct %v4float %42 %42 %42 %42
          %54 = OpExtInst %v4float %1 FMix %48 %51 %53
-               OpStore %frag_color %54
+               OpStore %44 %54
                OpReturn
                OpFunctionEnd

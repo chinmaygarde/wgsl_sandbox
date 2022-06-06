@@ -1,40 +1,25 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 10
-; Bound: 38
+; Bound: 37
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Vertex %main "main" %_ %vertices %interpolated_vertices
-               OpSource GLSL 460
-               OpSourceExtension "GL_GOOGLE_cpp_style_line_directive"
-               OpSourceExtension "GL_GOOGLE_include_directive"
-               OpName %main "main"
-               OpName %gl_PerVertex "gl_PerVertex"
-               OpMemberName %gl_PerVertex 0 "gl_Position"
-               OpMemberName %gl_PerVertex 1 "gl_PointSize"
-               OpMemberName %gl_PerVertex 2 "gl_ClipDistance"
-               OpMemberName %gl_PerVertex 3 "gl_CullDistance"
-               OpName %_ ""
-               OpName %FrameInfo "FrameInfo"
-               OpMemberName %FrameInfo 0 "mvp"
-               OpName %frame_info "frame_info"
-               OpName %vertices "vertices"
-               OpName %interpolated_vertices "interpolated_vertices"
-               OpMemberDecorate %gl_PerVertex 0 BuiltIn Position
-               OpMemberDecorate %gl_PerVertex 1 BuiltIn PointSize
-               OpMemberDecorate %gl_PerVertex 2 BuiltIn ClipDistance
-               OpMemberDecorate %gl_PerVertex 3 BuiltIn CullDistance
-               OpDecorate %gl_PerVertex Block
-               OpMemberDecorate %FrameInfo 0 ColMajor
-               OpMemberDecorate %FrameInfo 0 Offset 0
-               OpMemberDecorate %FrameInfo 0 MatrixStride 16
-               OpDecorate %FrameInfo Block
-               OpDecorate %frame_info DescriptorSet 0
-               OpDecorate %frame_info Binding 0
-               OpDecorate %vertices Location 0
-               OpDecorate %interpolated_vertices Location 0
+               OpEntryPoint Vertex %4 "main" %13 %25 %36
+               OpMemberDecorate %_struct_11 0 BuiltIn Position
+               OpMemberDecorate %_struct_11 1 BuiltIn PointSize
+               OpMemberDecorate %_struct_11 2 BuiltIn ClipDistance
+               OpMemberDecorate %_struct_11 3 BuiltIn CullDistance
+               OpDecorate %_struct_11 Block
+               OpMemberDecorate %_struct_17 0 ColMajor
+               OpMemberDecorate %_struct_17 0 Offset 0
+               OpMemberDecorate %_struct_17 0 MatrixStride 16
+               OpDecorate %_struct_17 Block
+               OpDecorate %19 DescriptorSet 0
+               OpDecorate %19 Binding 0
+               OpDecorate %25 Location 0
+               OpDecorate %36 Location 0
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
@@ -42,36 +27,35 @@
        %uint = OpTypeInt 32 0
      %uint_1 = OpConstant %uint 1
 %_arr_float_uint_1 = OpTypeArray %float %uint_1
-%gl_PerVertex = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
-%_ptr_Output_gl_PerVertex = OpTypePointer Output %gl_PerVertex
-          %_ = OpVariable %_ptr_Output_gl_PerVertex Output
+ %_struct_11 = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
+%_ptr_Output__struct_11 = OpTypePointer Output %_struct_11
+         %13 = OpVariable %_ptr_Output__struct_11 Output
         %int = OpTypeInt 32 1
       %int_0 = OpConstant %int 0
 %mat4v4float = OpTypeMatrix %v4float 4
-  %FrameInfo = OpTypeStruct %mat4v4float
-%_ptr_Uniform_FrameInfo = OpTypePointer Uniform %FrameInfo
- %frame_info = OpVariable %_ptr_Uniform_FrameInfo Uniform
+ %_struct_17 = OpTypeStruct %mat4v4float
+%_ptr_Uniform__struct_17 = OpTypePointer Uniform %_struct_17
+         %19 = OpVariable %_ptr_Uniform__struct_17 Uniform
 %_ptr_Uniform_mat4v4float = OpTypePointer Uniform %mat4v4float
     %v2float = OpTypeVector %float 2
 %_ptr_Input_v2float = OpTypePointer Input %v2float
-   %vertices = OpVariable %_ptr_Input_v2float Input
+         %25 = OpVariable %_ptr_Input_v2float Input
     %float_0 = OpConstant %float 0
     %float_1 = OpConstant %float 1
 %_ptr_Output_v4float = OpTypePointer Output %v4float
 %_ptr_Output_v2float = OpTypePointer Output %v2float
-%interpolated_vertices = OpVariable %_ptr_Output_v2float Output
-       %main = OpFunction %void None %3
+         %36 = OpVariable %_ptr_Output_v2float Output
+          %4 = OpFunction %void None %3
           %5 = OpLabel
-         %21 = OpAccessChain %_ptr_Uniform_mat4v4float %frame_info %int_0
+         %21 = OpAccessChain %_ptr_Uniform_mat4v4float %19 %int_0
          %22 = OpLoad %mat4v4float %21
-         %26 = OpLoad %v2float %vertices
+         %26 = OpLoad %v2float %25
          %29 = OpCompositeExtract %float %26 0
          %30 = OpCompositeExtract %float %26 1
          %31 = OpCompositeConstruct %v4float %29 %30 %float_0 %float_1
          %32 = OpMatrixTimesVector %v4float %22 %31
-         %34 = OpAccessChain %_ptr_Output_v4float %_ %int_0
+         %34 = OpAccessChain %_ptr_Output_v4float %13 %int_0
                OpStore %34 %32
-         %37 = OpLoad %v2float %vertices
-               OpStore %interpolated_vertices %37
+               OpStore %36 %26
                OpReturn
                OpFunctionEnd

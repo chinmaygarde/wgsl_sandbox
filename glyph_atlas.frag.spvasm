@@ -6,78 +6,56 @@
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Fragment %main "main" %v_atlas_glyph_size %v_atlas_size %v_atlas_position %frag_color %v_unit_vertex %v_text_color
-               OpExecutionMode %main OriginUpperLeft
-               OpSource GLSL 460
-               OpSourceExtension "GL_GOOGLE_cpp_style_line_directive"
-               OpSourceExtension "GL_GOOGLE_include_directive"
-               OpName %main "main"
-               OpName %scale_perspective "scale_perspective"
-               OpName %v_atlas_glyph_size "v_atlas_glyph_size"
-               OpName %v_atlas_size "v_atlas_size"
-               OpName %offset "offset"
-               OpName %v_atlas_position "v_atlas_position"
-               OpName %frag_color "frag_color"
-               OpName %glyph_atlas_sampler "glyph_atlas_sampler"
-               OpName %glyph_atlas_sampler_smplr "glyph_atlas_sampler_smplr"
-               OpName %v_unit_vertex "v_unit_vertex"
-               OpName %v_text_color "v_text_color"
-               OpDecorate %v_atlas_glyph_size Location 2
-               OpDecorate %v_atlas_size Location 3
-               OpDecorate %v_atlas_position Location 1
-               OpDecorate %frag_color Location 0
-               OpDecorate %glyph_atlas_sampler DescriptorSet 0
-               OpDecorate %glyph_atlas_sampler Binding 0
-               OpDecorate %glyph_atlas_sampler_smplr DescriptorSet 0
-               OpDecorate %glyph_atlas_sampler_smplr Binding 1
-               OpDecorate %v_unit_vertex Location 0
-               OpDecorate %v_text_color Location 4
+               OpEntryPoint Fragment %4 "main" %11 %13 %17 %23 %34 %43
+               OpExecutionMode %4 OriginUpperLeft
+               OpDecorate %11 Location 2
+               OpDecorate %13 Location 3
+               OpDecorate %17 Location 1
+               OpDecorate %23 Location 0
+               OpDecorate %26 DescriptorSet 0
+               OpDecorate %26 Binding 0
+               OpDecorate %30 DescriptorSet 0
+               OpDecorate %30 Binding 1
+               OpDecorate %34 Location 0
+               OpDecorate %43 Location 4
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
     %v2float = OpTypeVector %float 2
-%_ptr_Function_v2float = OpTypePointer Function %v2float
 %_ptr_Input_v2float = OpTypePointer Input %v2float
-%v_atlas_glyph_size = OpVariable %_ptr_Input_v2float Input
-%v_atlas_size = OpVariable %_ptr_Input_v2float Input
-%v_atlas_position = OpVariable %_ptr_Input_v2float Input
+         %11 = OpVariable %_ptr_Input_v2float Input
+         %13 = OpVariable %_ptr_Input_v2float Input
+         %17 = OpVariable %_ptr_Input_v2float Input
     %v4float = OpTypeVector %float 4
 %_ptr_Output_v4float = OpTypePointer Output %v4float
- %frag_color = OpVariable %_ptr_Output_v4float Output
+         %23 = OpVariable %_ptr_Output_v4float Output
          %24 = OpTypeImage %float 2D 0 0 0 1 Unknown
 %_ptr_UniformConstant_24 = OpTypePointer UniformConstant %24
-%glyph_atlas_sampler = OpVariable %_ptr_UniformConstant_24 UniformConstant
+         %26 = OpVariable %_ptr_UniformConstant_24 UniformConstant
          %28 = OpTypeSampler
 %_ptr_UniformConstant_28 = OpTypePointer UniformConstant %28
-%glyph_atlas_sampler_smplr = OpVariable %_ptr_UniformConstant_28 UniformConstant
+         %30 = OpVariable %_ptr_UniformConstant_28 UniformConstant
          %32 = OpTypeSampledImage %24
-%v_unit_vertex = OpVariable %_ptr_Input_v2float Input
+         %34 = OpVariable %_ptr_Input_v2float Input
 %_ptr_Input_v4float = OpTypePointer Input %v4float
-%v_text_color = OpVariable %_ptr_Input_v4float Input
-       %main = OpFunction %void None %3
+         %43 = OpVariable %_ptr_Input_v4float Input
+          %4 = OpFunction %void None %3
           %5 = OpLabel
-%scale_perspective = OpVariable %_ptr_Function_v2float Function
-     %offset = OpVariable %_ptr_Function_v2float Function
-         %12 = OpLoad %v2float %v_atlas_glyph_size
-         %14 = OpLoad %v2float %v_atlas_size
+         %12 = OpLoad %v2float %11
+         %14 = OpLoad %v2float %13
          %15 = OpFDiv %v2float %12 %14
-               OpStore %scale_perspective %15
-         %18 = OpLoad %v2float %v_atlas_position
-         %19 = OpLoad %v2float %v_atlas_size
-         %20 = OpFDiv %v2float %18 %19
-               OpStore %offset %20
-         %27 = OpLoad %24 %glyph_atlas_sampler
-         %31 = OpLoad %28 %glyph_atlas_sampler_smplr
+         %18 = OpLoad %v2float %17
+         %20 = OpFDiv %v2float %18 %14
+         %27 = OpLoad %24 %26
+         %31 = OpLoad %28 %30
          %33 = OpSampledImage %32 %27 %31
-         %35 = OpLoad %v2float %v_unit_vertex
-         %36 = OpLoad %v2float %scale_perspective
-         %37 = OpFMul %v2float %35 %36
-         %38 = OpLoad %v2float %offset
-         %39 = OpFAdd %v2float %37 %38
+         %35 = OpLoad %v2float %34
+         %37 = OpFMul %v2float %35 %15
+         %39 = OpFAdd %v2float %37 %20
          %40 = OpImageSampleImplicitLod %v4float %33 %39
          %41 = OpVectorShuffle %v4float %40 %40 3 3 3 3
-         %44 = OpLoad %v4float %v_text_color
+         %44 = OpLoad %v4float %43
          %45 = OpFMul %v4float %41 %44
-               OpStore %frag_color %45
+               OpStore %23 %45
                OpReturn
                OpFunctionEnd

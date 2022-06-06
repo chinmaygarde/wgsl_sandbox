@@ -51,7 +51,7 @@ fragment_shaders: $(WGSL_FRAG_FILES)
 				-std=460core						\
 				-fauto-bind-uniforms		\
 				-fauto-map-locations		\
-				-O0											\
+				-O											\
 				-S -o $@ $<
 
 %.frag.spvasm: %.frag
@@ -59,7 +59,7 @@ fragment_shaders: $(WGSL_FRAG_FILES)
 				-std=460core						\
 				-fauto-bind-uniforms		\
 				-fauto-map-locations		\
-				-O0											\
+				-O											\
 				-S -o $@ $<
 
 clean:

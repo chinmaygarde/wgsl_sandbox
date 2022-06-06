@@ -6,69 +6,37 @@
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Vertex %main "main" %_ %vertices %v_texture_coords %texture_coords %v_src_texture_coords %src_texture_coords %v_texture_size %v_blur_direction %v_blur_sigma %v_blur_radius %v_src_factor %v_inner_blur_factor %v_outer_blur_factor
-               OpSource GLSL 460
-               OpSourceExtension "GL_GOOGLE_cpp_style_line_directive"
-               OpSourceExtension "GL_GOOGLE_include_directive"
-               OpName %main "main"
-               OpName %gl_PerVertex "gl_PerVertex"
-               OpMemberName %gl_PerVertex 0 "gl_Position"
-               OpMemberName %gl_PerVertex 1 "gl_PointSize"
-               OpMemberName %gl_PerVertex 2 "gl_ClipDistance"
-               OpMemberName %gl_PerVertex 3 "gl_CullDistance"
-               OpName %_ ""
-               OpName %FrameInfo "FrameInfo"
-               OpMemberName %FrameInfo 0 "mvp"
-               OpMemberName %FrameInfo 1 "texture_size"
-               OpMemberName %FrameInfo 2 "blur_direction"
-               OpMemberName %FrameInfo 3 "blur_sigma"
-               OpMemberName %FrameInfo 4 "blur_radius"
-               OpMemberName %FrameInfo 5 "src_factor"
-               OpMemberName %FrameInfo 6 "inner_blur_factor"
-               OpMemberName %FrameInfo 7 "outer_blur_factor"
-               OpName %frame_info "frame_info"
-               OpName %vertices "vertices"
-               OpName %v_texture_coords "v_texture_coords"
-               OpName %texture_coords "texture_coords"
-               OpName %v_src_texture_coords "v_src_texture_coords"
-               OpName %src_texture_coords "src_texture_coords"
-               OpName %v_texture_size "v_texture_size"
-               OpName %v_blur_direction "v_blur_direction"
-               OpName %v_blur_sigma "v_blur_sigma"
-               OpName %v_blur_radius "v_blur_radius"
-               OpName %v_src_factor "v_src_factor"
-               OpName %v_inner_blur_factor "v_inner_blur_factor"
-               OpName %v_outer_blur_factor "v_outer_blur_factor"
-               OpMemberDecorate %gl_PerVertex 0 BuiltIn Position
-               OpMemberDecorate %gl_PerVertex 1 BuiltIn PointSize
-               OpMemberDecorate %gl_PerVertex 2 BuiltIn ClipDistance
-               OpMemberDecorate %gl_PerVertex 3 BuiltIn CullDistance
-               OpDecorate %gl_PerVertex Block
-               OpMemberDecorate %FrameInfo 0 ColMajor
-               OpMemberDecorate %FrameInfo 0 Offset 0
-               OpMemberDecorate %FrameInfo 0 MatrixStride 16
-               OpMemberDecorate %FrameInfo 1 Offset 64
-               OpMemberDecorate %FrameInfo 2 Offset 72
-               OpMemberDecorate %FrameInfo 3 Offset 80
-               OpMemberDecorate %FrameInfo 4 Offset 84
-               OpMemberDecorate %FrameInfo 5 Offset 88
-               OpMemberDecorate %FrameInfo 6 Offset 92
-               OpMemberDecorate %FrameInfo 7 Offset 96
-               OpDecorate %FrameInfo Block
-               OpDecorate %frame_info DescriptorSet 0
-               OpDecorate %frame_info Binding 0
-               OpDecorate %vertices Location 0
-               OpDecorate %v_texture_coords Location 0
-               OpDecorate %texture_coords Location 1
-               OpDecorate %v_src_texture_coords Location 1
-               OpDecorate %src_texture_coords Location 2
-               OpDecorate %v_texture_size Location 2
-               OpDecorate %v_blur_direction Location 3
-               OpDecorate %v_blur_sigma Location 4
-               OpDecorate %v_blur_radius Location 5
-               OpDecorate %v_src_factor Location 6
-               OpDecorate %v_inner_blur_factor Location 7
-               OpDecorate %v_outer_blur_factor Location 8
+               OpEntryPoint Vertex %4 "main" %13 %25 %36 %37 %39 %40 %42 %47 %52 %57 %61 %65 %69
+               OpMemberDecorate %_struct_11 0 BuiltIn Position
+               OpMemberDecorate %_struct_11 1 BuiltIn PointSize
+               OpMemberDecorate %_struct_11 2 BuiltIn ClipDistance
+               OpMemberDecorate %_struct_11 3 BuiltIn CullDistance
+               OpDecorate %_struct_11 Block
+               OpMemberDecorate %_struct_18 0 ColMajor
+               OpMemberDecorate %_struct_18 0 Offset 0
+               OpMemberDecorate %_struct_18 0 MatrixStride 16
+               OpMemberDecorate %_struct_18 1 Offset 64
+               OpMemberDecorate %_struct_18 2 Offset 72
+               OpMemberDecorate %_struct_18 3 Offset 80
+               OpMemberDecorate %_struct_18 4 Offset 84
+               OpMemberDecorate %_struct_18 5 Offset 88
+               OpMemberDecorate %_struct_18 6 Offset 92
+               OpMemberDecorate %_struct_18 7 Offset 96
+               OpDecorate %_struct_18 Block
+               OpDecorate %20 DescriptorSet 0
+               OpDecorate %20 Binding 0
+               OpDecorate %25 Location 0
+               OpDecorate %36 Location 0
+               OpDecorate %37 Location 1
+               OpDecorate %39 Location 1
+               OpDecorate %40 Location 2
+               OpDecorate %42 Location 2
+               OpDecorate %47 Location 3
+               OpDecorate %52 Location 4
+               OpDecorate %57 Location 5
+               OpDecorate %61 Location 6
+               OpDecorate %65 Location 7
+               OpDecorate %69 Location 8
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
@@ -76,79 +44,79 @@
        %uint = OpTypeInt 32 0
      %uint_1 = OpConstant %uint 1
 %_arr_float_uint_1 = OpTypeArray %float %uint_1
-%gl_PerVertex = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
-%_ptr_Output_gl_PerVertex = OpTypePointer Output %gl_PerVertex
-          %_ = OpVariable %_ptr_Output_gl_PerVertex Output
+ %_struct_11 = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
+%_ptr_Output__struct_11 = OpTypePointer Output %_struct_11
+         %13 = OpVariable %_ptr_Output__struct_11 Output
         %int = OpTypeInt 32 1
       %int_0 = OpConstant %int 0
 %mat4v4float = OpTypeMatrix %v4float 4
     %v2float = OpTypeVector %float 2
-  %FrameInfo = OpTypeStruct %mat4v4float %v2float %v2float %float %float %float %float %float
-%_ptr_Uniform_FrameInfo = OpTypePointer Uniform %FrameInfo
- %frame_info = OpVariable %_ptr_Uniform_FrameInfo Uniform
+ %_struct_18 = OpTypeStruct %mat4v4float %v2float %v2float %float %float %float %float %float
+%_ptr_Uniform__struct_18 = OpTypePointer Uniform %_struct_18
+         %20 = OpVariable %_ptr_Uniform__struct_18 Uniform
 %_ptr_Uniform_mat4v4float = OpTypePointer Uniform %mat4v4float
 %_ptr_Input_v2float = OpTypePointer Input %v2float
-   %vertices = OpVariable %_ptr_Input_v2float Input
+         %25 = OpVariable %_ptr_Input_v2float Input
     %float_0 = OpConstant %float 0
     %float_1 = OpConstant %float 1
 %_ptr_Output_v4float = OpTypePointer Output %v4float
 %_ptr_Output_v2float = OpTypePointer Output %v2float
-%v_texture_coords = OpVariable %_ptr_Output_v2float Output
-%texture_coords = OpVariable %_ptr_Input_v2float Input
-%v_src_texture_coords = OpVariable %_ptr_Output_v2float Output
-%src_texture_coords = OpVariable %_ptr_Input_v2float Input
-%v_texture_size = OpVariable %_ptr_Output_v2float Output
+         %36 = OpVariable %_ptr_Output_v2float Output
+         %37 = OpVariable %_ptr_Input_v2float Input
+         %39 = OpVariable %_ptr_Output_v2float Output
+         %40 = OpVariable %_ptr_Input_v2float Input
+         %42 = OpVariable %_ptr_Output_v2float Output
       %int_1 = OpConstant %int 1
 %_ptr_Uniform_v2float = OpTypePointer Uniform %v2float
-%v_blur_direction = OpVariable %_ptr_Output_v2float Output
+         %47 = OpVariable %_ptr_Output_v2float Output
       %int_2 = OpConstant %int 2
 %_ptr_Output_float = OpTypePointer Output %float
-%v_blur_sigma = OpVariable %_ptr_Output_float Output
+         %52 = OpVariable %_ptr_Output_float Output
       %int_3 = OpConstant %int 3
 %_ptr_Uniform_float = OpTypePointer Uniform %float
-%v_blur_radius = OpVariable %_ptr_Output_float Output
+         %57 = OpVariable %_ptr_Output_float Output
       %int_4 = OpConstant %int 4
-%v_src_factor = OpVariable %_ptr_Output_float Output
+         %61 = OpVariable %_ptr_Output_float Output
       %int_5 = OpConstant %int 5
-%v_inner_blur_factor = OpVariable %_ptr_Output_float Output
+         %65 = OpVariable %_ptr_Output_float Output
       %int_6 = OpConstant %int 6
-%v_outer_blur_factor = OpVariable %_ptr_Output_float Output
+         %69 = OpVariable %_ptr_Output_float Output
       %int_7 = OpConstant %int 7
-       %main = OpFunction %void None %3
+          %4 = OpFunction %void None %3
           %5 = OpLabel
-         %22 = OpAccessChain %_ptr_Uniform_mat4v4float %frame_info %int_0
+         %22 = OpAccessChain %_ptr_Uniform_mat4v4float %20 %int_0
          %23 = OpLoad %mat4v4float %22
-         %26 = OpLoad %v2float %vertices
+         %26 = OpLoad %v2float %25
          %29 = OpCompositeExtract %float %26 0
          %30 = OpCompositeExtract %float %26 1
          %31 = OpCompositeConstruct %v4float %29 %30 %float_0 %float_1
          %32 = OpMatrixTimesVector %v4float %23 %31
-         %34 = OpAccessChain %_ptr_Output_v4float %_ %int_0
+         %34 = OpAccessChain %_ptr_Output_v4float %13 %int_0
                OpStore %34 %32
-         %38 = OpLoad %v2float %texture_coords
-               OpStore %v_texture_coords %38
-         %41 = OpLoad %v2float %src_texture_coords
-               OpStore %v_src_texture_coords %41
-         %45 = OpAccessChain %_ptr_Uniform_v2float %frame_info %int_1
+         %38 = OpLoad %v2float %37
+               OpStore %36 %38
+         %41 = OpLoad %v2float %40
+               OpStore %39 %41
+         %45 = OpAccessChain %_ptr_Uniform_v2float %20 %int_1
          %46 = OpLoad %v2float %45
-               OpStore %v_texture_size %46
-         %49 = OpAccessChain %_ptr_Uniform_v2float %frame_info %int_2
+               OpStore %42 %46
+         %49 = OpAccessChain %_ptr_Uniform_v2float %20 %int_2
          %50 = OpLoad %v2float %49
-               OpStore %v_blur_direction %50
-         %55 = OpAccessChain %_ptr_Uniform_float %frame_info %int_3
+               OpStore %47 %50
+         %55 = OpAccessChain %_ptr_Uniform_float %20 %int_3
          %56 = OpLoad %float %55
-               OpStore %v_blur_sigma %56
-         %59 = OpAccessChain %_ptr_Uniform_float %frame_info %int_4
+               OpStore %52 %56
+         %59 = OpAccessChain %_ptr_Uniform_float %20 %int_4
          %60 = OpLoad %float %59
-               OpStore %v_blur_radius %60
-         %63 = OpAccessChain %_ptr_Uniform_float %frame_info %int_5
+               OpStore %57 %60
+         %63 = OpAccessChain %_ptr_Uniform_float %20 %int_5
          %64 = OpLoad %float %63
-               OpStore %v_src_factor %64
-         %67 = OpAccessChain %_ptr_Uniform_float %frame_info %int_6
+               OpStore %61 %64
+         %67 = OpAccessChain %_ptr_Uniform_float %20 %int_6
          %68 = OpLoad %float %67
-               OpStore %v_inner_blur_factor %68
-         %71 = OpAccessChain %_ptr_Uniform_float %frame_info %int_7
+               OpStore %65 %68
+         %71 = OpAccessChain %_ptr_Uniform_float %20 %int_7
          %72 = OpLoad %float %71
-               OpStore %v_outer_blur_factor %72
+               OpStore %69 %72
                OpReturn
                OpFunctionEnd

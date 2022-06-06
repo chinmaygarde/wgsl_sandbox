@@ -1,26 +1,26 @@
-var<private> frag_color : vec4<f32>;
+var<private> x_9 : vec4<f32>;
 
-@group(0) @binding(0) var texture_sampler_src : texture_2d<f32>;
+@group(0) @binding(0) var x_12 : texture_2d<f32>;
 
-@group(0) @binding(1) var texture_sampler_src_smplr : sampler;
+@group(0) @binding(1) var x_16 : sampler;
 
-var<private> v_texture_coords : vec2<f32>;
+var<private> x_22 : vec2<f32>;
 
 fn main_1() {
-  let x_23 : vec2<f32> = v_texture_coords;
-  let x_24 : vec4<f32> = textureSample(texture_sampler_src, texture_sampler_src_smplr, x_23);
-  frag_color = x_24;
+  let x_23 : vec2<f32> = x_22;
+  let x_24 : vec4<f32> = textureSample(x_12, x_16, x_23);
+  x_9 = x_24;
   return;
 }
 
 struct main_out {
   @location(0)
-  frag_color_1 : vec4<f32>,
+  x_9_1 : vec4<f32>,
 }
 
 @stage(fragment)
-fn main(@location(0) v_texture_coords_param : vec2<f32>) -> main_out {
-  v_texture_coords = v_texture_coords_param;
+fn main(@location(0) x_22_param : vec2<f32>) -> main_out {
+  x_22 = x_22_param;
   main_1();
-  return main_out(frag_color);
+  return main_out(x_9);
 }

@@ -1,211 +1,122 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 10
-; Bound: 133
+; Bound: 154
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Fragment %main "main" %v_blur_sigma %v_blur_direction %v_texture_size %v_blur_radius %v_texture_coords %v_src_texture_coords %v_inner_blur_factor %v_outer_blur_factor %frag_color %v_src_factor
-               OpExecutionMode %main OriginUpperLeft
-               OpSource GLSL 460
-               OpSourceExtension "GL_GOOGLE_cpp_style_line_directive"
-               OpSourceExtension "GL_GOOGLE_include_directive"
-               OpName %main "main"
-               OpName %Gaussian_f1_ "Gaussian(f1;"
-               OpName %x "x"
-               OpName %variance "variance"
-               OpName %v_blur_sigma "v_blur_sigma"
-               OpName %total_color "total_color"
-               OpName %gaussian_integral "gaussian_integral"
-               OpName %blur_uv_offset "blur_uv_offset"
-               OpName %v_blur_direction "v_blur_direction"
-               OpName %v_texture_size "v_texture_size"
-               OpName %i "i"
-               OpName %v_blur_radius "v_blur_radius"
-               OpName %gaussian "gaussian"
-               OpName %param "param"
-               OpName %texture_sampler "texture_sampler"
-               OpName %texture_sampler_smplr "texture_sampler_smplr"
-               OpName %v_texture_coords "v_texture_coords"
-               OpName %blur_color "blur_color"
-               OpName %src_color "src_color"
-               OpName %alpha_mask_sampler "alpha_mask_sampler"
-               OpName %alpha_mask_sampler_smplr "alpha_mask_sampler_smplr"
-               OpName %v_src_texture_coords "v_src_texture_coords"
-               OpName %blur_factor "blur_factor"
-               OpName %v_inner_blur_factor "v_inner_blur_factor"
-               OpName %v_outer_blur_factor "v_outer_blur_factor"
-               OpName %frag_color "frag_color"
-               OpName %v_src_factor "v_src_factor"
-               OpDecorate %v_blur_sigma Location 4
-               OpDecorate %v_blur_direction Location 3
-               OpDecorate %v_texture_size Location 2
-               OpDecorate %v_blur_radius Location 5
-               OpDecorate %texture_sampler DescriptorSet 0
-               OpDecorate %texture_sampler Binding 0
-               OpDecorate %texture_sampler_smplr DescriptorSet 0
-               OpDecorate %texture_sampler_smplr Binding 1
-               OpDecorate %v_texture_coords Location 0
-               OpDecorate %alpha_mask_sampler DescriptorSet 0
-               OpDecorate %alpha_mask_sampler Binding 2
-               OpDecorate %alpha_mask_sampler_smplr DescriptorSet 0
-               OpDecorate %alpha_mask_sampler_smplr Binding 3
-               OpDecorate %v_src_texture_coords Location 1
-               OpDecorate %v_inner_blur_factor Location 7
-               OpDecorate %v_outer_blur_factor Location 8
-               OpDecorate %frag_color Location 0
-               OpDecorate %v_src_factor Location 6
+               OpEntryPoint Fragment %4 "main" %14 %42 %44 %48 %78 %102 %106 %115 %124 %129
+               OpExecutionMode %4 OriginUpperLeft
+               OpDecorate %14 Location 4
+               OpDecorate %42 Location 3
+               OpDecorate %44 Location 2
+               OpDecorate %48 Location 5
+               OpDecorate %70 DescriptorSet 0
+               OpDecorate %70 Binding 0
+               OpDecorate %74 DescriptorSet 0
+               OpDecorate %74 Binding 1
+               OpDecorate %78 Location 0
+               OpDecorate %97 DescriptorSet 0
+               OpDecorate %97 Binding 2
+               OpDecorate %99 DescriptorSet 0
+               OpDecorate %99 Binding 3
+               OpDecorate %102 Location 1
+               OpDecorate %106 Location 7
+               OpDecorate %115 Location 8
+               OpDecorate %124 Location 0
+               OpDecorate %129 Location 6
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
-%_ptr_Function_float = OpTypePointer Function %float
-          %8 = OpTypeFunction %float %_ptr_Function_float
 %_ptr_Input_float = OpTypePointer Input %float
-%v_blur_sigma = OpVariable %_ptr_Input_float Input
+         %14 = OpVariable %_ptr_Input_float Input
  %float_n0_5 = OpConstant %float -0.5
 %float_2_50662827 = OpConstant %float 2.50662827
     %v4float = OpTypeVector %float 4
-%_ptr_Function_v4float = OpTypePointer Function %v4float
     %float_0 = OpConstant %float 0
          %36 = OpConstantComposite %v4float %float_0 %float_0 %float_0 %float_0
     %v2float = OpTypeVector %float 2
-%_ptr_Function_v2float = OpTypePointer Function %v2float
 %_ptr_Input_v2float = OpTypePointer Input %v2float
-%v_blur_direction = OpVariable %_ptr_Input_v2float Input
-%v_texture_size = OpVariable %_ptr_Input_v2float Input
-%v_blur_radius = OpVariable %_ptr_Input_float Input
+         %42 = OpVariable %_ptr_Input_v2float Input
+         %44 = OpVariable %_ptr_Input_v2float Input
+         %48 = OpVariable %_ptr_Input_float Input
        %bool = OpTypeBool
          %68 = OpTypeImage %float 2D 0 0 0 1 Unknown
 %_ptr_UniformConstant_68 = OpTypePointer UniformConstant %68
-%texture_sampler = OpVariable %_ptr_UniformConstant_68 UniformConstant
+         %70 = OpVariable %_ptr_UniformConstant_68 UniformConstant
          %72 = OpTypeSampler
 %_ptr_UniformConstant_72 = OpTypePointer UniformConstant %72
-%texture_sampler_smplr = OpVariable %_ptr_UniformConstant_72 UniformConstant
+         %74 = OpVariable %_ptr_UniformConstant_72 UniformConstant
          %76 = OpTypeSampledImage %68
-%v_texture_coords = OpVariable %_ptr_Input_v2float Input
+         %78 = OpVariable %_ptr_Input_v2float Input
     %float_1 = OpConstant %float 1
-%alpha_mask_sampler = OpVariable %_ptr_UniformConstant_68 UniformConstant
-%alpha_mask_sampler_smplr = OpVariable %_ptr_UniformConstant_72 UniformConstant
-%v_src_texture_coords = OpVariable %_ptr_Input_v2float Input
-%v_inner_blur_factor = OpVariable %_ptr_Input_float Input
-       %uint = OpTypeInt 32 0
-     %uint_3 = OpConstant %uint 3
-%v_outer_blur_factor = OpVariable %_ptr_Input_float Input
+         %97 = OpVariable %_ptr_UniformConstant_68 UniformConstant
+         %99 = OpVariable %_ptr_UniformConstant_72 UniformConstant
+        %102 = OpVariable %_ptr_Input_v2float Input
+        %106 = OpVariable %_ptr_Input_float Input
+        %115 = OpVariable %_ptr_Input_float Input
 %_ptr_Output_v4float = OpTypePointer Output %v4float
- %frag_color = OpVariable %_ptr_Output_v4float Output
-%v_src_factor = OpVariable %_ptr_Input_float Input
-       %main = OpFunction %void None %3
+        %124 = OpVariable %_ptr_Output_v4float Output
+        %129 = OpVariable %_ptr_Input_float Input
+          %4 = OpFunction %void None %3
           %5 = OpLabel
-%total_color = OpVariable %_ptr_Function_v4float Function
-%gaussian_integral = OpVariable %_ptr_Function_float Function
-%blur_uv_offset = OpVariable %_ptr_Function_v2float Function
-          %i = OpVariable %_ptr_Function_float Function
-   %gaussian = OpVariable %_ptr_Function_float Function
-      %param = OpVariable %_ptr_Function_float Function
- %blur_color = OpVariable %_ptr_Function_v4float Function
-  %src_color = OpVariable %_ptr_Function_v4float Function
-%blur_factor = OpVariable %_ptr_Function_float Function
-               OpStore %total_color %36
-               OpStore %gaussian_integral %float_0
-         %43 = OpLoad %v2float %v_blur_direction
-         %45 = OpLoad %v2float %v_texture_size
+         %43 = OpLoad %v2float %42
+         %45 = OpLoad %v2float %44
          %46 = OpFDiv %v2float %43 %45
-               OpStore %blur_uv_offset %46
-         %49 = OpLoad %float %v_blur_radius
+         %49 = OpLoad %float %48
          %50 = OpFNegate %float %49
-               OpStore %i %50
                OpBranch %51
          %51 = OpLabel
-               OpLoopMerge %53 %54 None
-               OpBranch %55
-         %55 = OpLabel
-         %56 = OpLoad %float %i
-         %57 = OpLoad %float %v_blur_radius
-         %59 = OpFOrdLessThanEqual %bool %56 %57
+        %153 = OpPhi %float %float_0 %5 %66 %52
+        %152 = OpPhi %v4float %36 %5 %87 %52
+        %151 = OpPhi %float %50 %5 %90 %52
+         %59 = OpFOrdLessThanEqual %bool %151 %49
+               OpLoopMerge %53 %52 None
                OpBranchConditional %59 %52 %53
          %52 = OpLabel
-         %62 = OpLoad %float %i
-               OpStore %param %62
-         %63 = OpFunctionCall %float %Gaussian_f1_ %param
-               OpStore %gaussian %63
-         %64 = OpLoad %float %gaussian
-         %65 = OpLoad %float %gaussian_integral
-         %66 = OpFAdd %float %65 %64
-               OpStore %gaussian_integral %66
-         %67 = OpLoad %float %gaussian
-         %71 = OpLoad %68 %texture_sampler
-         %75 = OpLoad %72 %texture_sampler_smplr
+        %136 = OpLoad %float %14
+        %138 = OpFMul %float %136 %136
+        %140 = OpFMul %float %float_n0_5 %151
+        %142 = OpFMul %float %140 %151
+        %144 = OpFDiv %float %142 %138
+        %145 = OpExtInst %float %1 Exp %144
+        %147 = OpFMul %float %float_2_50662827 %136
+        %148 = OpFDiv %float %145 %147
+         %66 = OpFAdd %float %153 %148
+         %71 = OpLoad %68 %70
+         %75 = OpLoad %72 %74
          %77 = OpSampledImage %76 %71 %75
-         %79 = OpLoad %v2float %v_texture_coords
-         %80 = OpLoad %v2float %blur_uv_offset
-         %81 = OpLoad %float %i
-         %82 = OpVectorTimesScalar %v2float %80 %81
+         %79 = OpLoad %v2float %78
+         %82 = OpVectorTimesScalar %v2float %46 %151
          %83 = OpFAdd %v2float %79 %82
          %84 = OpImageSampleImplicitLod %v4float %77 %83
-         %85 = OpVectorTimesScalar %v4float %84 %67
-         %86 = OpLoad %v4float %total_color
-         %87 = OpFAdd %v4float %86 %85
-               OpStore %total_color %87
-               OpBranch %54
-         %54 = OpLabel
-         %88 = OpLoad %float %i
-         %90 = OpFAdd %float %88 %float_1
-               OpStore %i %90
+         %85 = OpVectorTimesScalar %v4float %84 %148
+         %87 = OpFAdd %v4float %152 %85
+         %90 = OpFAdd %float %151 %float_1
                OpBranch %51
          %53 = OpLabel
-         %92 = OpLoad %v4float %total_color
-         %93 = OpLoad %float %gaussian_integral
-         %94 = OpCompositeConstruct %v4float %93 %93 %93 %93
-         %95 = OpFDiv %v4float %92 %94
-               OpStore %blur_color %95
-         %98 = OpLoad %68 %alpha_mask_sampler
-        %100 = OpLoad %72 %alpha_mask_sampler_smplr
+         %94 = OpCompositeConstruct %v4float %153 %153 %153 %153
+         %95 = OpFDiv %v4float %152 %94
+         %98 = OpLoad %68 %97
+        %100 = OpLoad %72 %99
         %101 = OpSampledImage %76 %98 %100
-        %103 = OpLoad %v2float %v_src_texture_coords
+        %103 = OpLoad %v2float %102
         %104 = OpImageSampleImplicitLod %v4float %101 %103
-               OpStore %src_color %104
-        %107 = OpLoad %float %v_inner_blur_factor
-        %110 = OpAccessChain %_ptr_Function_float %src_color %uint_3
-        %111 = OpLoad %float %110
+        %107 = OpLoad %float %106
+        %111 = OpCompositeExtract %float %104 3
         %112 = OpFOrdGreaterThan %bool %111 %float_0
         %113 = OpSelect %float %112 %float_1 %float_0
         %114 = OpFMul %float %107 %113
-        %116 = OpLoad %float %v_outer_blur_factor
-        %117 = OpAccessChain %_ptr_Function_float %src_color %uint_3
-        %118 = OpLoad %float %117
-        %119 = OpFOrdEqual %bool %118 %float_0
+        %116 = OpLoad %float %115
+        %119 = OpFOrdEqual %bool %111 %float_0
         %120 = OpSelect %float %119 %float_1 %float_0
         %121 = OpFMul %float %116 %120
         %122 = OpFAdd %float %114 %121
-               OpStore %blur_factor %122
-        %125 = OpLoad %v4float %blur_color
-        %126 = OpLoad %float %blur_factor
-        %127 = OpVectorTimesScalar %v4float %125 %126
-        %128 = OpLoad %v4float %src_color
-        %130 = OpLoad %float %v_src_factor
-        %131 = OpVectorTimesScalar %v4float %128 %130
+        %127 = OpVectorTimesScalar %v4float %95 %122
+        %130 = OpLoad %float %129
+        %131 = OpVectorTimesScalar %v4float %104 %130
         %132 = OpFAdd %v4float %127 %131
-               OpStore %frag_color %132
+               OpStore %124 %132
                OpReturn
-               OpFunctionEnd
-%Gaussian_f1_ = OpFunction %float None %8
-          %x = OpFunctionParameter %_ptr_Function_float
-         %11 = OpLabel
-   %variance = OpVariable %_ptr_Function_float Function
-         %15 = OpLoad %float %v_blur_sigma
-         %16 = OpLoad %float %v_blur_sigma
-         %17 = OpFMul %float %15 %16
-               OpStore %variance %17
-         %19 = OpLoad %float %x
-         %20 = OpFMul %float %float_n0_5 %19
-         %21 = OpLoad %float %x
-         %22 = OpFMul %float %20 %21
-         %23 = OpLoad %float %variance
-         %24 = OpFDiv %float %22 %23
-         %25 = OpExtInst %float %1 Exp %24
-         %27 = OpLoad %float %v_blur_sigma
-         %28 = OpFMul %float %float_2_50662827 %27
-         %29 = OpFDiv %float %25 %28
-               OpReturnValue %29
                OpFunctionEnd

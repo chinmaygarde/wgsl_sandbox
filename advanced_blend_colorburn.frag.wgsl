@@ -1,124 +1,93 @@
-struct BlendInfo {
-  color_factor : f32,
+struct S {
+  field0 : f32,
   @size(12)
   padding : u32,
-  color : vec4<f32>,
+  field1 : vec4<f32>,
 }
 
-@group(0) @binding(1) var texture_sampler_dst : texture_2d<f32>;
+@group(0) @binding(1) var x_106 : texture_2d<f32>;
 
-@group(0) @binding(2) var texture_sampler_dst_smplr : sampler;
+@group(0) @binding(2) var x_110 : sampler;
 
-var<private> v_dst_texture_coords : vec2<f32>;
+var<private> x_116 : vec2<f32>;
 
-@group(0) @binding(0) var<uniform> blend_info : BlendInfo;
+@group(0) @binding(0) var<uniform> x_124 : S;
 
-@group(0) @binding(3) var texture_sampler_src : texture_2d<f32>;
+@group(0) @binding(3) var x_139 : texture_2d<f32>;
 
-@group(0) @binding(4) var texture_sampler_src_smplr : sampler;
+@group(0) @binding(4) var x_141 : sampler;
 
-var<private> v_src_texture_coords : vec2<f32>;
+var<private> x_144 : vec2<f32>;
 
-var<private> frag_color : vec4<f32>;
-
-fn Unpremultiply_vf4_(color : ptr<function, vec4<f32>>) -> vec4<f32> {
-  let x_83 : f32 = (*(color)).w;
-  if ((x_83 == 0.0)) {
-    return vec4<f32>(0.0, 0.0, 0.0, 0.0);
-  }
-  let x_89 : vec4<f32> = *(color);
-  let x_92 : f32 = (*(color)).w;
-  let x_94 : vec3<f32> = (vec3<f32>(x_89.x, x_89.y, x_89.z) / vec3<f32>(x_92, x_92, x_92));
-  let x_96 : f32 = (*(color)).w;
-  return vec4<f32>(x_94.x, x_94.y, x_94.z, x_96);
-}
-
-fn ComponentIsValue_vf3_f1_(n : ptr<function, vec3<f32>>, value : ptr<function, f32>) -> vec3<f32> {
-  var diff : vec3<f32>;
-  let x_27 : vec3<f32> = *(n);
-  let x_28 : f32 = *(value);
-  diff = abs((x_27 - vec3<f32>(x_28, x_28, x_28)));
-  let x_35 : f32 = diff.x;
-  let x_44 : f32 = diff.y;
-  let x_49 : f32 = diff.z;
-  return vec3<f32>(select(0.0, 1.0, (x_35 < 0.0001)), select(0.0, 1.0, (x_44 < 0.0001)), select(0.0, 1.0, (x_49 < 0.0001)));
-}
-
-fn Blend_vf3_vf3_(dst : ptr<function, vec3<f32>>, src : ptr<function, vec3<f32>>) -> vec3<f32> {
-  var color_1 : vec3<f32>;
-  var param : vec3<f32>;
-  var param_1 : f32;
-  var param_2 : vec3<f32>;
-  var param_3 : f32;
-  let x_57 : vec3<f32> = *(dst);
-  let x_60 : vec3<f32> = *(src);
-  color_1 = (vec3<f32>(1.0, 1.0, 1.0) - min(vec3<f32>(1.0, 1.0, 1.0), ((vec3<f32>(1.0, 1.0, 1.0) - x_57) / x_60)));
-  let x_65 : vec3<f32> = color_1;
-  let x_67 : vec3<f32> = *(dst);
-  param = x_67;
-  param_1 = 1.0;
-  let x_69 : vec3<f32> = ComponentIsValue_vf3_f1_(&(param), &(param_1));
-  color_1 = mix(x_65, vec3<f32>(1.0, 1.0, 1.0), x_69);
-  let x_71 : vec3<f32> = color_1;
-  let x_74 : vec3<f32> = *(src);
-  param_2 = x_74;
-  param_3 = 0.0;
-  let x_76 : vec3<f32> = ComponentIsValue_vf3_f1_(&(param_2), &(param_3));
-  color_1 = mix(x_71, vec3<f32>(0.0, 0.0, 0.0), x_76);
-  let x_78 : vec3<f32> = color_1;
-  return x_78;
-}
+var<private> x_159 : vec4<f32>;
 
 fn main_1() {
-  var dst_1 : vec4<f32>;
-  var param_4 : vec4<f32>;
-  var src_1 : vec4<f32>;
-  var x_131 : vec4<f32>;
-  var param_5 : vec4<f32>;
-  var blended : vec3<f32>;
-  var param_6 : vec3<f32>;
-  var param_7 : vec3<f32>;
-  let x_117 : vec2<f32> = v_dst_texture_coords;
-  let x_118 : vec4<f32> = textureSample(texture_sampler_dst, texture_sampler_dst_smplr, x_117);
-  param_4 = x_118;
-  let x_120 : vec4<f32> = Unpremultiply_vf4_(&(param_4));
-  dst_1 = x_120;
-  let x_129 : f32 = blend_info.color_factor;
-  if ((x_129 > 0.0)) {
-    let x_137 : vec4<f32> = blend_info.color;
-    x_131 = x_137;
-  } else {
-    let x_145 : vec2<f32> = v_src_texture_coords;
-    let x_146 : vec4<f32> = textureSample(texture_sampler_src, texture_sampler_src_smplr, x_145);
-    param_5 = x_146;
-    let x_148 : vec4<f32> = Unpremultiply_vf4_(&(param_5));
-    x_131 = x_148;
+  var x_118 : vec4<f32>;
+  var x_199 : vec4<f32>;
+  var x_137 : vec4<f32>;
+  var x_307 : vec4<f32>;
+  var x_306_phi : vec4<f32>;
+  var x_308_phi : vec4<f32>;
+  let x_117 : vec2<f32> = x_116;
+  x_118 = textureSample(x_106, x_110, x_117);
+  switch(0u) {
+    default: {
+      let x_184 : f32 = x_118.w;
+      if ((x_184 == 0.0)) {
+        x_306_phi = vec4<f32>(0.0, 0.0, 0.0, 0.0);
+        break;
+      }
+      let x_193 : vec3<f32> = (vec3<f32>(x_118.x, x_118.y, x_118.z) / vec3<f32>(x_184, x_184, x_184));
+      x_199 = vec4<f32>(x_193.x, x_193.y, x_193.z, x_184);
+      x_306_phi = x_199;
+    }
   }
-  let x_149 : vec4<f32> = x_131;
-  src_1 = x_149;
-  let x_152 : vec4<f32> = dst_1;
-  param_6 = vec3<f32>(x_152.x, x_152.y, x_152.z);
-  let x_155 : vec4<f32> = src_1;
-  param_7 = vec3<f32>(x_155.x, x_155.y, x_155.z);
-  let x_157 : vec3<f32> = Blend_vf3_vf3_(&(param_6), &(param_7));
-  blended = x_157;
-  let x_160 : vec3<f32> = blended;
-  let x_162 : f32 = src_1.w;
-  let x_163 : vec3<f32> = (x_160 * x_162);
-  let x_165 : f32 = src_1.w;
-  frag_color = vec4<f32>(x_163.x, x_163.y, x_163.z, x_165);
+  var x_223 : vec4<f32>;
+  var x_307_phi : vec4<f32>;
+  let x_306 : vec4<f32> = x_306_phi;
+  let x_129 : f32 = x_124.field0;
+  if ((x_129 > 0.0)) {
+    x_137 = x_124.field1;
+    x_308_phi = x_137;
+  } else {
+    var x_146 : vec4<f32>;
+    let x_145 : vec2<f32> = x_144;
+    x_146 = textureSample(x_139, x_141, x_145);
+    switch(0u) {
+      default: {
+        let x_208 : f32 = x_146.w;
+        if ((x_208 == 0.0)) {
+          x_307_phi = vec4<f32>(0.0, 0.0, 0.0, 0.0);
+          break;
+        }
+        let x_217 : vec3<f32> = (vec3<f32>(x_146.x, x_146.y, x_146.z) / vec3<f32>(x_208, x_208, x_208));
+        x_223 = vec4<f32>(x_217.x, x_217.y, x_217.z, x_208);
+        x_307_phi = x_223;
+      }
+    }
+    x_307 = x_307_phi;
+    x_308_phi = x_307;
+  }
+  let x_308 : vec4<f32> = x_308_phi;
+  let x_153 : vec3<f32> = vec3<f32>(x_306.x, x_306.y, x_306.z);
+  let x_156 : vec3<f32> = vec3<f32>(x_308.x, x_308.y, x_308.z);
+  let x_257 : vec3<f32> = abs((x_153 - vec3<f32>(1.0, 1.0, 1.0)));
+  let x_278 : vec3<f32> = abs(x_156);
+  let x_162 : f32 = x_308.w;
+  let x_163 : vec3<f32> = (mix(mix((vec3<f32>(1.0, 1.0, 1.0) - min(vec3<f32>(1.0, 1.0, 1.0), ((vec3<f32>(1.0, 1.0, 1.0) - x_153) / x_156))), vec3<f32>(1.0, 1.0, 1.0), vec3<f32>(select(0.0, 1.0, (x_257.x < 0.0001)), select(0.0, 1.0, (x_257.y < 0.0001)), select(0.0, 1.0, (x_257.z < 0.0001)))), vec3<f32>(0.0, 0.0, 0.0), vec3<f32>(select(0.0, 1.0, (x_278.x < 0.0001)), select(0.0, 1.0, (x_278.y < 0.0001)), select(0.0, 1.0, (x_278.z < 0.0001)))) * x_162);
+  x_159 = vec4<f32>(x_163.x, x_163.y, x_163.z, x_162);
   return;
 }
 
 struct main_out {
   @location(0)
-  frag_color_1 : vec4<f32>,
+  x_159_1 : vec4<f32>,
 }
 
 @stage(fragment)
-fn main(@location(0) v_dst_texture_coords_param : vec2<f32>, @location(1) v_src_texture_coords_param : vec2<f32>) -> main_out {
-  v_dst_texture_coords = v_dst_texture_coords_param;
-  v_src_texture_coords = v_src_texture_coords_param;
+fn main(@location(0) x_116_param : vec2<f32>, @location(1) x_144_param : vec2<f32>) -> main_out {
+  x_116 = x_116_param;
+  x_144 = x_144_param;
   main_1();
-  return main_out(frag_color);
+  return main_out(x_159);
 }
